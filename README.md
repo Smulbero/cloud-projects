@@ -29,9 +29,9 @@ Each project contained in its own directory and typically includes following fil
 
 ```
 /cloud-projects/
-├───README.md                                Project overview and goals
+├───README.md                                
 └───xxx-project-name
-    ├───README.md
+    ├───README.md                            Project overview and goals
     ├───architecture                         Architecture documentation and diagrams
     │   ├───architecture-decision-records    Architecture decision records
     |   └───diagrams
