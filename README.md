@@ -27,16 +27,18 @@ Documentation is treated as part of thinking process and solution, not something
 
 Each project contained in its own directory and typically includes following files.
 
+```
 /cloud-projects/
-├───README.md                                Project overview and goals  
-└───xxx-project-name  
-    ├───README.md  
-    ├───architecture                         Architecture documentation and diagrams  
-    │   ├───architecture-decision-records    Architecture decision records  
-    |   └───diagrams  
-    └───deployment                           Deployment files  
-        ├───iac-deployment     
-        └───manual-deployment  
+├───README.md                                Project overview and goals
+└───xxx-project-name
+    ├───README.md
+    ├───architecture                         Architecture documentation and diagrams
+    │   ├───architecture-decision-records    Architecture decision records
+    |   └───diagrams
+    └───deployment                           Deployment files
+        ├───iac-deployment
+        └───manual-deployment
+```
 
 ## Scope
 
