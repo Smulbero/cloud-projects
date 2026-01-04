@@ -8,7 +8,7 @@ Accepted
 
 ## Context
 
-Environment is intende to host multiple workloads while maintained separation between shared infrastucture and application workloads. Flat network topology doesn't scale well as number of workloads increase, has increased security risks and governance becomes more complicated.
+Environment is intended to host multiple workloads while maintained separation between shared infrastucture and application workloads. Flat network topology doesn't scale well as number of workloads increase, has increased security risks and governance becomes more complicated.
 
 ## Decision
 
