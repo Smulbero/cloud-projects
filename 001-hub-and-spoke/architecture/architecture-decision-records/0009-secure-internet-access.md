@@ -8,15 +8,15 @@ Accepted
 
 ## Context
 
-Workloads require outbound access to the public internet for updates, package downloads and external service dependencies. 
+Workloads require access to the public internet for updates, package downloads and external service dependencies. 
 
 ## Decision
 
-Deploy Azure Firewall in the hub virtual network and route all outbound traffic through the firewall.
+Deploy Azure Firewall in the hub virtual network and route all egress and ingress traffic through the firewall.
 
 ## Consequences
 
 - Centralized traffic control and logging
-- Outbound access can be finely tuned
+- Allow and deny traffic flows more precisely
 - Additional costs
 - Requires route table management
