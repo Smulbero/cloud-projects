@@ -5,21 +5,7 @@ Implementing a secure, scalable Azure network foundation that isolates workloads
 
 Goals of this project
 - Separation of different workloads and infrastructure
-- Workloads are able to communicate to different Virtual Networks
-- Workloads don't have public IPs, direct SSH/RDP is denied
-- Workloads access happens through Bastion
-
-## Deployment
-<!-- Ways project was implemented -->
-
-### Manual Deployment
-<!-- Summary of steps taken ? -->
-
-### Infrastructure as Code
-<!-- IaC tools used, reusability -->
-
-## Validation
-<!-- How do I know that implementation works -->
-
-## Failure behavior
-<!-- What happens if something breaks -->
+- Workloads are able to communicate to different virtual networks via central hub
+- Workloads don't have public IPs and cannot be accessed from external source
+- Workload administrative access goes through Bastion
+- Egress network traffic flows through firewall
