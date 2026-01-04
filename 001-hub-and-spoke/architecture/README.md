@@ -1,5 +1,22 @@
 # Architecture
 
+![Architecture diagram](diagrams/hub-and-spoke.png)
+
+## Components
+
+- **Azure Bastion**
+    - Secure SSH/RDP access to workloads without exposing public IPs
+- **Azure Network Manager**
+    - Centralized management console for region wide virtual networks
+- **Azure Virtual Network**
+    - Hub-spoke private network separation. VNet - VNet communication goes through central VNet containing shared services
+- **Azure Firewall**
+    - Egress point for internet destined traffic from workloads. 
+- **Azure Route Table**
+    - Force egress traffic through Azure Firewall
+- **Network Security Group**
+    - Subnet level network rules, workload specific rules applied at NIC level
+
 ## Architecture Decision Records
 
 Architectural design records are recorded to preserve context of architectural choices. These will be written in the format proposed in a
