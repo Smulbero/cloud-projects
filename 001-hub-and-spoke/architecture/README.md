@@ -19,7 +19,7 @@
 
 ## Architecture Decision Records
 
-Architectural design records are recorded to preserve context of architectural choices. These will be written in the format proposed in a
+Architectural decision records are recorded to preserve context of architectural choices. These will be written in the format proposed in a
 [blog post by Michael Nygard](http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions)
 
 List of ADRs are in [architecture-decisions-records directory](architecture-decision-records/).

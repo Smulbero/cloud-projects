@@ -8,7 +8,7 @@ Accepted
 
 ## Context
 
-The environment is expected to be multi region and have multiple workloads for different use cases. Defining IP addressing strategy is critical in order for etwork expansion not becoming prone to errors or risking overlapping address spaces. Address space must be planned to support scalability and isolation.
+The environment is expected to be multi region and have multiple workloads for different use cases. Defining IP addressing strategy is critical in order for network expansion not becoming prone to errors or risking overlapping address spaces. Address space must be planned to support scalability and isolation.
 
 ## Decision
 
