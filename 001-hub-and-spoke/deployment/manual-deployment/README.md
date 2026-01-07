@@ -37,4 +37,4 @@ Screenshots in [screenshots/](screenshots/) capture the order in which resources
 
 ## Deployed environment
 
-![Deployed diagram](screenshots/_deployed-diagram.png)
+![Deployed diagram](screenshots/_deployed-environment.png)
