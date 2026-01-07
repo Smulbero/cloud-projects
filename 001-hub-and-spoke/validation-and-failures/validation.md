@@ -8,7 +8,8 @@
 
 **Validation**
 
-- ICMP (ping) succeeds between workloads in different spoke networks
+- ~~ICMP (ping) succeeds between workloads in different spoke networks~~
+- TCP connection (RDP) succees to another workload
 
 ## 2. Administrative access goes through Azure Bastion
 
@@ -26,4 +27,5 @@
 
 **Validation**
 - HTTP/HTTPS succeeds only for allowed destinations
-- Traceroute shows firewall as next hop
+- ~~Traceroute shows firewall as next hop~~
+- Network Watcher shows firewall as next hop
