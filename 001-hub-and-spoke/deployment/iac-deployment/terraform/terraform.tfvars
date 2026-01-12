@@ -1,4 +1,16 @@
 # ------------------------------------------------------------------------------
+# Important note
+# ------------------------------------------------------------------------------
+# Many if not all resources are linked together with "env_key" that MUST match
+#
+# Env_keys are based on resource group where resources will be deployed or where
+# they are located.
+#
+# For example in this Hub-and-Spoke topology configuration, all resources that
+# belong to rg-hub, are under a key of "hub"
+
+
+# ------------------------------------------------------------------------------
 # Miscellaneous
 # ------------------------------------------------------------------------------
 dns_servers = ["8.8.8.8", "8.8.4.4"]
@@ -7,11 +19,11 @@ public_ips = {
   hub = {
     ip_configs = {
       AzureBastion = {
-        allocation_method = "Dynamic"
+        allocation_method = "Static"
         sku               = "Standard"
       }
       AzureFirewall = {
-        allocation_method = "Dynamic"
+        allocation_method = "Static"
         sku               = "Standard"
       }
     }
@@ -58,12 +70,8 @@ networks = {
     vnet_address_space = ["10.10.16.0/20"]
     subnets = {
       WorkloadSubnet = {
-        subnet_name          = "WorkloadSubnetSubnet"
+        subnet_name          = "WorkloadSubnet"
         subnet_address_space = ["10.10.16.0/24"]
-      }
-      testnet = {
-        subnet_name          = "TestSubnet"
-        subnet_address_space = ["10.10.17.0/24"]
       }
     }
   }
@@ -72,7 +80,7 @@ networks = {
     vnet_address_space = ["10.10.32.0/20"]
     subnets = {
       WorkloadSubnet = {
-        subnet_name          = "WorkloadSubnetSubnet"
+        subnet_name          = "WorkloadSubnet"
         subnet_address_space = ["10.10.32.0/24"]
       }
     }
@@ -85,7 +93,7 @@ networks = {
 nsgs = {
   sales = {
     rules = {
-      allowrdpin = {
+      rule-01 = {
         rule_name                  = "AllowRdpIn"
         priority                   = "100"
         direction                  = "Inbound"
@@ -98,13 +106,13 @@ nsgs = {
       }
     }
     associations = {
-      subnets = ["WorkloadSubnet", "testnet"]
+      subnets = ["WorkloadSubnet"]
     }
   }
 
   marketing = {
     rules = {
-      allowrdpin = {
+      rule-01 = {
         rule_name                  = "AllowRdpIn"
         priority                   = "100"
         direction                  = "Inbound"
@@ -132,11 +140,11 @@ route_tables = {
         route_name             = "fw-default-gw"
         address_prefix         = "0.0.0.0/0"
         next_hop_type          = "VirtualAppliance"
-        next_hop_in_ip_address = "10.10.1.4"
+        next_hop_in_ip_address = "10.10.1.4" # First usable address in AzureFirewallSubnet
       }
     }
     associations = {
-      sales     = ["WorkloadSubnet", "testnet"]
+      sales     = ["WorkloadSubnet"]
       marketing = ["WorkloadSubnet"]
     }
   }
@@ -151,11 +159,6 @@ network_interfaces = {
       vm-01 = {
         name                          = "internal"
         subnet_association            = "WorkloadSubnet"
-        private_ip_address_allocation = "Dynamic"
-      }
-      interface_test = {
-        name                          = "internal"
-        subnet_association            = "testnet"
         private_ip_address_allocation = "Dynamic"
       }
     }
@@ -189,6 +192,8 @@ virtual_machines_linux = {
           sku       = "22_04_lts"
           version   = "latest"
         }
+
+        password_authentication = false
       }
     }
   }
@@ -209,6 +214,8 @@ virtual_machines_linux = {
           sku       = "22_04_lts"
           version   = "latest"
         }
+
+        password_authentication = false
       }
     }
   }
@@ -305,3 +312,39 @@ azure_firewalls = {
 # ------------------------------------------------------------------------------
 # Network Manager
 # ------------------------------------------------------------------------------
+network_managers = {
+  misc = {
+    scope_accesses = ["Connectivity"]
+
+    groups = {
+      spoke-group = {
+        name    = "spoke-networks-northeurope"
+        netman  = "misc"
+        members = ["sales", "marketing"]
+      }
+    }
+
+    connectivity_configs = {
+      hub-and-spoke = {
+        name                  = "Hub-and-Spoke"
+        connectivity_topology = "HubAndSpoke"
+        applies_to_groups = {
+          spoke-group = {
+            group_connectivity = "None"
+          }
+        }
+        hub = {
+          resource_id   = "hub"
+          resource_type = "Microsoft.Network/virtualNetworks"
+        }
+      }
+    }
+
+    deployment_configs = {
+      misc = {
+        scope_access     = "Connectivity"
+        configuration_id = "misc.hub-and-spoke.spoke-group" # Resource key of flattened env_key, connectivity_key and group_key
+      }
+    }
+  }
+}

@@ -171,6 +171,8 @@ variable "virtual_machines_linux" {
         sku       = string
         version   = string
       })
+
+      password_authentication = bool
     }))
   }))
 }
@@ -212,6 +214,7 @@ locals {
         version              = config.source_image_reference.version
         admin_username       = var.virtual_machine_credentials[env_key].credential_configs[config_key].admin_username
         admin_password       = var.virtual_machine_credentials[env_key].credential_configs[config_key].admin_password
+        password_authentication = config.password_authentication
       }
     ]]
   )
@@ -371,3 +374,84 @@ locals {
 # ------------------------------------------------------------------------------
 # Network Manager
 # ------------------------------------------------------------------------------
+variable "network_managers" {
+  description = "Network Managers"
+  type = map(object({
+    scope_accesses = list(string)
+
+    groups = map(object({
+      name    = string
+      netman  = string
+      members = list(string)
+    }))
+
+    connectivity_configs = map(object({
+      name                  = string
+      connectivity_topology = string
+      applies_to_groups = map(object({
+        group_connectivity = string
+      }))
+      hub = object({
+        resource_id   = string
+        resource_type = string
+      })
+    }))
+
+    deployment_configs = map(object({
+      scope_access     = string
+      configuration_id = string
+    }))
+  }))
+}
+
+locals {
+  netman_groups = flatten([
+    for env_key, env in var.network_managers : [
+      for group_key, group in env.groups : {
+        env_key   = env_key
+        group_key = group_key
+      }
+    ]
+  ])
+
+  netman_group_members = flatten([
+    for env_key, env in var.network_managers : [
+      for group_key, group in env.groups : [
+        for member_key, member in group.members : {
+          env_key    = env_key
+          group_key  = group_key
+          member_key = member_key
+          member     = member
+          name       = group.name
+        }
+      ]
+    ]
+  ])
+
+  netman_connectivity_configs = flatten([
+    for env_key, env in var.network_managers : [
+      for config_key, config in env.connectivity_configs : [
+        for group_key, group in config.applies_to_groups : {
+          env_key               = env_key
+          config_key            = config_key
+          group_key             = group_key
+          name                  = config.name
+          connectivity_topology = config.connectivity_topology
+          groups                = config.applies_to_groups
+          hub                   = config.hub
+        }
+      ]
+    ]
+  ])
+
+  netman_deployment_configs = flatten([
+    for env_key, env in var.network_managers : [
+      for config_key, config in env.deployment_configs : {
+        env_key      = env_key
+        config_key   = config_key
+        scope_access = config.scope_access
+        configuration_id = config.configuration_id
+      }
+    ]
+  ])
+}

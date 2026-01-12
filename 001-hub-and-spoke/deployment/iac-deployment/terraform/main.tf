@@ -128,6 +128,7 @@ resource "azurerm_route" "this" {
   address_prefix         = each.value.route_address_prefix
   next_hop_type          = each.value.route_next_hop_type
   next_hop_in_ip_address = each.value.route_hop_in_ip_address
+  # next_hop_in_ip_address = azurerm_firewall.this["hub"].ip_configuration[*].private_ip_address
 }
 
 # Route table associations
@@ -162,6 +163,8 @@ resource "azurerm_linux_virtual_machine" "this" {
 
   admin_username = each.value.admin_username
   admin_password = each.value.admin_password
+
+  disable_password_authentication = each.value.password_authentication
 
   network_interface_ids = [azurerm_network_interface.this["${each.value.env_key}.${each.value.config_key}"].id]
 
@@ -329,3 +332,84 @@ resource "azurerm_firewall_network_rule_collection" "this" {
 # ------------------------------------------------------------------------------
 # Network Manager
 # ------------------------------------------------------------------------------
+# Subscription ID for Network Manager
+data "azurerm_subscription" "current" {
+}
+
+# Network Manager
+resource "azurerm_network_manager" "this" {
+  for_each = var.network_managers
+
+  name = format(
+    "%s-%s-%s",
+    "netman",
+    each.key,
+    azurerm_resource_group.this[each.key].location
+  )
+  location            = azurerm_resource_group.this[each.key].location
+  resource_group_name = azurerm_resource_group.this[each.key].name
+
+  scope {
+    subscription_ids = [data.azurerm_subscription.current.id]
+  }
+  scope_accesses = each.value.scope_accesses
+
+  tags = var.common_tags
+}
+
+# Network groups
+resource "azurerm_network_manager_network_group" "spokes" {
+  for_each = tomap({
+    for d in local.netman_groups : "${d.env_key}.${d.group_key}" => d
+  })
+
+  name               = each.value.group_key
+  network_manager_id = azurerm_network_manager.this[each.value.env_key].id
+
+}
+
+resource "azurerm_network_manager_static_member" "spokes" {
+  for_each = tomap({
+    for d in local.netman_group_members : "${d.env_key}.${d.group_key}.${d.member}" => d
+  })
+
+  name                      = "${each.value.env_key}-${each.value.group_key}-${each.value.member}"
+  network_group_id          = azurerm_network_manager_network_group.spokes["${each.value.env_key}.${each.value.group_key}"].id
+  target_virtual_network_id = azurerm_virtual_network.this[each.value.member].id
+}
+
+# Connectivity config
+resource "azurerm_network_manager_connectivity_configuration" "hub-and-spoke" {
+  for_each = tomap({
+    for d in local.netman_connectivity_configs : "${d.env_key}.${d.config_key}.${d.group_key}" => d
+  })
+
+  name                  = each.value.name
+  network_manager_id    = azurerm_network_manager.this[each.value.env_key].id
+  connectivity_topology = each.value.connectivity_topology
+
+  dynamic "applies_to_group" {
+    for_each = each.value.groups
+    content {
+      group_connectivity = applies_to_group.value.group_connectivity
+      network_group_id   = azurerm_network_manager_network_group.spokes["${each.value.env_key}.${each.value.group_key}"].id
+    }
+  }
+
+  hub {
+    resource_id   = azurerm_virtual_network.this[each.value.hub.resource_id].id
+    resource_type = each.value.hub.resource_type
+  }
+}
+
+# Deployment
+resource "azurerm_network_manager_deployment" "hub-and-spoke" {
+  for_each = tomap({
+    for d in local.netman_deployment_configs : "${d.env_key}.${d.config_key}" => d
+  })
+
+  network_manager_id = azurerm_network_manager.this[each.value.env_key].id
+  location           = azurerm_network_manager.this[each.value.env_key].location
+  scope_access       = each.value.scope_access
+  configuration_ids  = [azurerm_network_manager_connectivity_configuration.hub-and-spoke[each.value.configuration_id].id]
+}

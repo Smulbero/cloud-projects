@@ -1,6 +1,6 @@
-# -------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Miscellaneous
-# -------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # output "resource_groups" {
 #   value = {
 #     for k, d in azurerm_resource_group.this :
@@ -10,9 +10,9 @@
 #   }
 # }
 
-# -------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Virtual Networks
-# -------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # output "networks" {
 #   value = {
 #     for k, d in azurerm_virtual_network.this :
@@ -32,9 +32,9 @@
 #   }
 # }
 
-# -------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Network Security Groups
-# -------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # output "nsgs" {
 #   value = {
 #     for k, d in azurerm_network_security_group.this :
@@ -54,9 +54,9 @@
 #   }
 # }
 
-# -------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Route Tables
-# -------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # output "route_tables" {
 #   value = {
 #     for k, d in azurerm_route_table.this :
@@ -84,9 +84,9 @@
 #   }
 # }
 
-# -------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Virtual Machines
-# -------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # output "network_interfaces" {
 #   value = {
 #     for k, d in azurerm_network_interface.this :
@@ -129,24 +129,68 @@ output "azure_firewall" {
   }
 }
 
-output "azure_firewall_app_rules" {
-  value = {
-    for k, d in azurerm_firewall_application_rule_collection.this :
-    k => {
-      app_rule = d
-    }
-  }
-}
+# output "azure_firewall_app_rules" {
+#   value = {
+#     for k, d in azurerm_firewall_application_rule_collection.this :
+#     k => {
+#       app_rule = d
+#     }
+#   }
+# }
 
-output "azure_firewall_net_rules" {
-  value = {
-    for k, d in azurerm_firewall_network_rule_collection.this :
-    k => {
-      net_rule = d
-    }
-  }
-}
+# output "azure_firewall_net_rules" {
+#   value = {
+#     for k, d in azurerm_firewall_network_rule_collection.this :
+#     k => {
+#       net_rule = d
+#     }
+#   }
+# }
 
 # ------------------------------------------------------------------------------
 # Network Manager
 # ------------------------------------------------------------------------------
+# output "network_manager" {
+#   value = {
+#     for k, d in azurerm_network_manager.this :
+#     k => {
+#       netman = d
+#     }
+#   }
+# }
+
+# output "netman_net_groups" {
+#   value = {
+#     for k, d in azurerm_network_manager_network_group.spokes :
+#     k => {
+#       group = d
+#     }
+#   }
+# }
+
+# output "netman_net_group_members" {
+#   value = {
+#     for k, d in azurerm_network_manager_static_member.spokes :
+#     k => {
+#       member = d
+#     }
+#   }
+# }
+
+# output "netman_connectivity_config" {
+#   value = {
+#     for k, d in azurerm_network_manager_connectivity_configuration.hub-and-spoke :
+#     k => {
+#       config = d
+#     }
+#   }
+# }
+
+# output "netman_deployment" {
+#   value = {
+#     for k, d in azurerm_network_manager_deployment.hub-and-spoke :
+#     k => {
+#       deployment = d
+#     }
+#   }
+# }
