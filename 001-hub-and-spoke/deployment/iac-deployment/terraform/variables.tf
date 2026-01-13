@@ -154,7 +154,7 @@ locals {
 # -------------------------------------------------------------------------------------------------------
 # Virtual Machines
 # -------------------------------------------------------------------------------------------------------
-variable "virtual_machines_linux" {
+variable "virtual_machines_windows" {
   description = "Virtual Machines"
   type = map(object({
     vm_configs = map(object({
@@ -172,7 +172,7 @@ variable "virtual_machines_linux" {
         version   = string
       })
 
-      password_authentication = bool
+      password_authentication = optional(bool)
     }))
   }))
 }
@@ -200,21 +200,21 @@ variable "network_interfaces" {
 }
 
 locals {
-  vm_linux_configs = flatten([
-    for env_key, env in var.virtual_machines_linux : [
+  vm_windows_configs = flatten([
+    for env_key, env in var.virtual_machines_windows : [
       for config_key, config in env.vm_configs : {
-        env_key              = env_key
-        config_key           = config_key
-        size                 = config.size
-        caching              = config.os_disk.caching
-        storage_account_type = config.os_disk.storage_account_type
-        publisher            = config.source_image_reference.publisher
-        offer                = config.source_image_reference.offer
-        sku                  = config.source_image_reference.sku
-        version              = config.source_image_reference.version
-        admin_username       = var.virtual_machine_credentials[env_key].credential_configs[config_key].admin_username
-        admin_password       = var.virtual_machine_credentials[env_key].credential_configs[config_key].admin_password
-        password_authentication = config.password_authentication
+        env_key                 = env_key
+        config_key              = config_key
+        size                    = config.size
+        caching                 = config.os_disk.caching
+        storage_account_type    = config.os_disk.storage_account_type
+        publisher               = config.source_image_reference.publisher
+        offer                   = config.source_image_reference.offer
+        sku                     = config.source_image_reference.sku
+        version                 = config.source_image_reference.version
+        admin_username          = var.virtual_machine_credentials[env_key].credential_configs[config_key].admin_username
+        admin_password          = var.virtual_machine_credentials[env_key].credential_configs[config_key].admin_password
+        password_authentication = try(config.password_authentication, null)
       }
     ]]
   )
@@ -264,14 +264,14 @@ variable "azure_firewalls" {
 
     app_rules = map(object({
       collection_name = string
-      priority        = string
+      priority        = number
       action          = string
       rules = map(object({
         rule_name        = string
         source_addresses = optional(list(string))
         target_fqdns     = optional(list(string))
         protocols = optional(map(object({
-          port = string
+          port = number
           type = string
         })))
       }))
@@ -279,7 +279,7 @@ variable "azure_firewalls" {
 
     net_rules = map(object({
       collection_name = string
-      priority        = string
+      priority        = number
       action          = string
       rules = map(object({
         rule_name             = string
@@ -447,9 +447,9 @@ locals {
   netman_deployment_configs = flatten([
     for env_key, env in var.network_managers : [
       for config_key, config in env.deployment_configs : {
-        env_key      = env_key
-        config_key   = config_key
-        scope_access = config.scope_access
+        env_key          = env_key
+        config_key       = config_key
+        scope_access     = config.scope_access
         configuration_id = config.configuration_id
       }
     ]
