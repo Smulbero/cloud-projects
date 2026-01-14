@@ -18,21 +18,25 @@ Screenshots in [screenshots/](screenshots/) capture the order in which resources
 
 ## Key configuration highlights
 
-**Virtual network**
+### Virtual network
+
 - Custom DNS configuration
 
-**Azure Firewall**
+### Azure Firewall
+
 - Deployed in AzureFirewallSubnet
 - Network and application rules
     - DNS on port 53, servers same as configured on VNets
     - Allow/deny destinations
 
-**Route table**
+### Route table
+
 - Default gateway route to firewall
     - 0.0.0.0/0 -> Azure Firewall private IP
 - Associate only with workload subnets
 
-**Network security groups**
+### Network security groups
+
 - Allow SSH/RDP access
 
 ## Deployed environment
