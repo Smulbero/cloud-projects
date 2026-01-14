@@ -144,9 +144,9 @@ resource "azurerm_subnet_route_table_association" "this" {
 # ------------------------------------------------------------------------------
 # Virtual Machines
 # ------------------------------------------------------------------------------
-resource "azurerm_linux_virtual_machine" "this" {
+resource "azurerm_windows_virtual_machine" "this" {
   for_each = tomap({
-    for d in local.vm_linux_configs : "${d.env_key}.${d.config_key}" => d
+    for d in local.vm_windows_configs : "${d.env_key}.${d.config_key}" => d
   })
 
   name = format(
@@ -159,12 +159,11 @@ resource "azurerm_linux_virtual_machine" "this" {
   resource_group_name = azurerm_resource_group.this[each.value.env_key].name
   location            = azurerm_resource_group.this[each.value.env_key].location
 
-  size = each.value.size
+  computer_name = "vm-${each.value.env_key}-${substr(each.value.config_key, -2, -1)}"
+  size          = each.value.size
 
   admin_username = each.value.admin_username
   admin_password = each.value.admin_password
-
-  disable_password_authentication = each.value.password_authentication
 
   network_interface_ids = [azurerm_network_interface.this["${each.value.env_key}.${each.value.config_key}"].id]
 
@@ -281,6 +280,8 @@ resource "azurerm_firewall" "this" {
 
 # Application rules
 resource "azurerm_firewall_application_rule_collection" "this" {
+  depends_on = [azurerm_firewall.this]
+
   for_each = tomap({
     for d in local.firewall_app_rules : "${d.env_key}.${d.collection_key}" => d
   })
@@ -309,6 +310,8 @@ resource "azurerm_firewall_application_rule_collection" "this" {
 
 # Network rules
 resource "azurerm_firewall_network_rule_collection" "this" {
+  depends_on = [azurerm_firewall.this]
+
   for_each = tomap({
     for d in local.firewall_net_rules : "${d.env_key}.${d.collection_key}" => d
   })

@@ -175,11 +175,11 @@ network_interfaces = {
   }
 }
 
-virtual_machines_linux = {
+virtual_machines_windows = {
   sales = {
     vm_configs = {
       vm-01 = {
-        size = "Standard_F2"
+        size = "Standard_F4"
 
         os_disk = {
           caching              = "None"
@@ -187,13 +187,11 @@ virtual_machines_linux = {
         }
 
         source_image_reference = {
-          publisher = "Canonical"
-          offer     = "0001-com-ubuntu-server-jammy"
-          sku       = "22_04-lts-gen2"
+          publisher = "MicrosoftWindowsServer"
+          offer     = "WindowsServer"
+          sku       = "2019-Datacenter"
           version   = "latest"
         }
-
-        password_authentication = false
       }
     }
   }
@@ -201,7 +199,7 @@ virtual_machines_linux = {
   marketing = {
     vm_configs = {
       vm-01 = {
-        size = "Standard_F2"
+        size = "Standard_F4"
 
         os_disk = {
           caching              = "None"
@@ -209,13 +207,11 @@ virtual_machines_linux = {
         }
 
         source_image_reference = {
-          publisher = "Canonical"
-          offer     = "0001-com-ubuntu-server-jammy"
-          sku       = "22_04_lts"
+          publisher = "MicrosoftWindowsServer"
+          offer     = "WindowsServer"
+          sku       = "2019-Datacenter"
           version   = "latest"
         }
-
-        password_authentication = false
       }
     }
   }
@@ -257,7 +253,7 @@ azure_bastions = {
 azure_firewalls = {
   hub = {
     config = {
-      sku_name  = "AZFW_Hub"
+      sku_name  = "AZFW_VNet"
       sku_tier  = "Standard"
       subnet    = "AzureFirewallSubnet"
       public_ip = "AzureFirewall"
@@ -266,21 +262,21 @@ azure_firewalls = {
     app_rules = {
       app-collection-01 = {
         collection_name = "app-collection-01"
-        priority        = "200"
+        priority        = 200
         action          = "Allow"
 
         rules = {
           rule-01 = {
             rule_name        = "Allow-Google"
-            source_addresses = ["10.10.0.0/20"]
+            source_addresses = ["10.10.0.0/16"]
             target_fqdns     = ["www.google.com"]
             protocols = {
               protocol-01 = {
-                port = "443"
+                port = 443
                 type = "Https"
               }
               protocol-02 = {
-                port = "80"
+                port = 80
                 type = "Http"
               }
             }
@@ -292,13 +288,13 @@ azure_firewalls = {
     net_rules = {
       net-collection-01 = {
         collection_name = "net-collection-01"
-        priority        = "200"
+        priority        = 200
         action          = "Allow"
 
         rules = {
           rule-01 = {
             rule_name             = "Allow-DNS"
-            source_addresses      = ["10.10.0.0/20"]
+            source_addresses      = ["10.10.0.0/16"]
             destination_ports     = ["53"]
             destination_addresses = ["8.8.8.8", "8.8.4.4"]
             protocols             = ["UDP"]

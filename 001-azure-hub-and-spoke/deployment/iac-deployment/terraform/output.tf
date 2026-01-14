@@ -120,14 +120,14 @@
 # ------------------------------------------------------------------------------
 # Azure Firewall
 # ------------------------------------------------------------------------------
-output "azure_firewall" {
-  value = {
-    for k, d in azurerm_firewall.this :
-    k => {
-      firewall = d
-    }
-  }
-}
+# output "azure_firewall" {
+#   value = {
+#     for k, d in azurerm_firewall.this :
+#     k => {
+#       firewall = d
+#     }
+#   }
+# }
 
 # output "azure_firewall_app_rules" {
 #   value = {
