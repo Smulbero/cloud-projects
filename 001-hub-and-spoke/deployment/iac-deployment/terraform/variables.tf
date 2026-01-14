@@ -29,7 +29,13 @@ variable "resource_groups" {
 # Virtual Networks
 # -------------------------------------------------------------------------------------------------------
 variable "networks" {
-  description = "Networks"
+  description = <<-EOT
+    Network configuration for VNets and subnets.
+    Each network is separated by a key such as "example_key"
+    Each network block supports multiple subnet configurations 
+    under "subnets" object
+  EOT
+
   type = map(object({
     vnet_address_space = list(string)
     subnets = map(object({
@@ -59,7 +65,13 @@ locals {
 # Network Security Groups
 # -------------------------------------------------------------------------------------------------------
 variable "nsgs" {
-  description = "Network Security Groups"
+  description = <<EOT
+    Network Security Group configurations.
+    Each NSG is separated by a key such as "example_key"
+    Each NSG block supports multiple rules under "rules" object
+    and subnet associations under selected key such as "example_key" 
+  EOT
+
   type = map(object({
     rules = map(object({
       rule_name                  = string
@@ -112,7 +124,17 @@ locals {
 # Route Tables
 # -------------------------------------------------------------------------------------------------------
 variable "route_tables" {
-  description = "Route Tables"
+  description = <<EOT
+    Route table configurations.
+    Each route table is separated by a key such as "example_key"
+    Each route table supports multiple route configurations 
+    under "routes" object and associations by key:value pair e.g.
+      associations = {
+        sales = ["SomeSubnet"]
+        marketing = ["AnotherSubnet"]
+      }
+  EOT
+
   type = map(object({
     routes = map(object({
       route_name             = string
@@ -155,7 +177,11 @@ locals {
 # Virtual Machines
 # -------------------------------------------------------------------------------------------------------
 variable "virtual_machines_windows" {
-  description = "Virtual Machines"
+  description = <<EOT
+    Virtual Machine configurations
+    Each key supports multiple VM configurations under "vm_configs" object
+  EOT
+
   type = map(object({
     vm_configs = map(object({
       size = string
@@ -172,13 +198,17 @@ variable "virtual_machines_windows" {
         version   = string
       })
 
-      password_authentication = optional(bool)
     }))
   }))
 }
 
 variable "virtual_machine_credentials" {
-  description = "VM Credentials"
+  description = <<EOT
+    Virtual Machine admin credentials
+    Disclaimer: this isn't probably the best way to do this, 
+    terraform environment variables should probably be used instead
+  EOT
+
   type = map(object({
     credential_configs = map(object({
       admin_username = string
@@ -189,7 +219,12 @@ variable "virtual_machine_credentials" {
 }
 
 variable "network_interfaces" {
-  description = "Network Inferfaces"
+  description = <<EOT
+    Network Interface Configurations
+    Supports multiple interface configurations under 
+    "interface_configs" object
+  EOT
+
   type = map(object({
     interface_configs = map(object({
       name                          = string
@@ -214,7 +249,6 @@ locals {
         version                 = config.source_image_reference.version
         admin_username          = var.virtual_machine_credentials[env_key].credential_configs[config_key].admin_username
         admin_password          = var.virtual_machine_credentials[env_key].credential_configs[config_key].admin_password
-        password_authentication = try(config.password_authentication, null)
       }
     ]]
   )
@@ -236,7 +270,13 @@ locals {
 # Azure Bastion
 # ------------------------------------------------------------------------------
 variable "azure_bastions" {
-  description = "Azure Bastions"
+  description = <<EOT
+    Azure Bastion configurations
+    Supports multiple Bastions under separate keys such as
+    "example_key". 
+    Each Bastion need their own public_ip resource.
+  EOT
+
   type = map(object({
     subnet    = string
     public_ip = string
@@ -244,7 +284,7 @@ variable "azure_bastions" {
 }
 
 variable "bastion_config_name" {
-  description = "Basion configuration name attribute"
+  description = "Bastion configuration name attribute"
   type        = string
   default     = "configuration"
 }
@@ -253,7 +293,14 @@ variable "bastion_config_name" {
 # Azure Firewall
 # ------------------------------------------------------------------------------
 variable "azure_firewalls" {
-  description = "Azure Firewalls"
+  description = <<EOT
+    Azure Firewall configurations
+    Supports multiple firewall creations, each under separate key 
+    such as "example_key".
+    Each firewall supports multiple application and network rules,
+    each rule under "rules" object.
+  EOT
+
   type = map(object({
     config = object({
       sku_name  = string
@@ -349,7 +396,11 @@ locals {
 # Public IP Addresses
 # ------------------------------------------------------------------------------
 variable "public_ips" {
-  description = "Public IP addresses"
+  description = <<EOT
+    Public IP address configurations.
+    Supports creation of multiple resources under  "ip_configs" object.
+  EOT
+
   type = map(object({
     ip_configs = map(object({
       allocation_method = string
@@ -375,7 +426,13 @@ locals {
 # Network Manager
 # ------------------------------------------------------------------------------
 variable "network_managers" {
-  description = "Network Managers"
+  description = <<EOT
+    Network Manager configurations.
+    Each netman supports multiple groups, connectivity configurations and
+    deployment configurations, under "groups", "connectivity_configs" and 
+    "deployment_configs" objects
+  EOT
+
   type = map(object({
     scope_accesses = list(string)
 
