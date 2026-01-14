@@ -13,6 +13,7 @@ Screenshots in [screenshots/](screenshots/) capture the order in which resources
 ## Key configuration highlights
 
 ### Highlight
+
 - Description
 
 ## Deployed environment

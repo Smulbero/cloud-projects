@@ -10,6 +10,8 @@ This document contains configuration highlights.
 
 ### Highlight
 
+- Description
+
 ## Deployed environment
 
 ![Deployed diagram](screenshots/_deployed-environment.png)
