@@ -160,7 +160,7 @@ resource "azurerm_windows_virtual_machine" "this" {
   location            = azurerm_resource_group.this[each.value.env_key].location
 
   computer_name = "vm-${each.value.env_key}-${substr(each.value.config_key, -2, -1)}"
-  size = each.value.size
+  size          = each.value.size
 
   admin_username = each.value.admin_username
   admin_password = each.value.admin_password

@@ -238,17 +238,17 @@ locals {
   vm_windows_configs = flatten([
     for env_key, env in var.virtual_machines_windows : [
       for config_key, config in env.vm_configs : {
-        env_key                 = env_key
-        config_key              = config_key
-        size                    = config.size
-        caching                 = config.os_disk.caching
-        storage_account_type    = config.os_disk.storage_account_type
-        publisher               = config.source_image_reference.publisher
-        offer                   = config.source_image_reference.offer
-        sku                     = config.source_image_reference.sku
-        version                 = config.source_image_reference.version
-        admin_username          = var.virtual_machine_credentials[env_key].credential_configs[config_key].admin_username
-        admin_password          = var.virtual_machine_credentials[env_key].credential_configs[config_key].admin_password
+        env_key              = env_key
+        config_key           = config_key
+        size                 = config.size
+        caching              = config.os_disk.caching
+        storage_account_type = config.os_disk.storage_account_type
+        publisher            = config.source_image_reference.publisher
+        offer                = config.source_image_reference.offer
+        sku                  = config.source_image_reference.sku
+        version              = config.source_image_reference.version
+        admin_username       = var.virtual_machine_credentials[env_key].credential_configs[config_key].admin_username
+        admin_password       = var.virtual_machine_credentials[env_key].credential_configs[config_key].admin_password
       }
     ]]
   )
