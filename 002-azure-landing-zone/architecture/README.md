@@ -1,6 +1,6 @@
 # Architecture
 
-![Architecture diagram](diagrams/diagram.png)
+![Architecture diagram](diagrams/azure-landing-zone.png)
 
 ## Components
 
