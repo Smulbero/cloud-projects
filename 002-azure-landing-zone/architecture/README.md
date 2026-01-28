@@ -4,6 +4,30 @@
 
 ## Components
 
+### Tenant
+
+Represents the Azure tenant for the organization
+
+### Subscription
+
+Organizational unit. Can be turned into Management Group in enterprise scale implementations
+
+### Resource Group
+
+Organizational unit for related resources. Can be turned into Subscription(s) in enterprise scale implementations
+
+### Virtual Network
+
+Hub-and-spoke network pattern where traffic is centralized through shared services
+
+### Policy Assignment
+
+Resource rule enforcement. Applied at resource group level in this design. Could be applied at management group or subscription level in enterprise scale implementations
+
+### Role Assignment
+
+Role Based Access Control defining who can do what and at which scope. Applied at resource group level in this design. Could be applied at management group or subscription level in enterprise scale implementations
+
 ## Architecture Decision Records
 
 Architectural decision records are recorded to preserve context of architectural choices. These will be written in the format proposed in a
