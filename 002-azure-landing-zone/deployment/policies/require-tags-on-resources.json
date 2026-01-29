@@ -1,0 +1,37 @@
+{
+  "properties": {
+    "displayName": "Require tags on resources",
+    "policyType": "Custom",
+    "mode": "Indexed",
+    "description": "Enforces a required tags on resources.",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Tags"
+    },
+    "version": "1.0.0",
+    "policyRule": {
+      "if": {
+        "anyOf": [{
+            "field": "tags['CostCenter']",
+            "exists": false
+          },
+          {
+            "field": "tags['Owner']",
+            "exists": false
+          },
+          {
+            "field": "tags['DeployedMethod']",
+            "exists": false
+          },
+          {
+            "field": "tags['DeployedDate']",
+            "exists": false
+          }
+        ]
+      }
+    },
+    "then": {
+      "effect": "deny"
+    }
+  }
+}
