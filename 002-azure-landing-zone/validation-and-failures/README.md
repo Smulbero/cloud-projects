@@ -8,6 +8,11 @@ Validation focuses on expected behavior based on architectural design, not on hi
 
 ## Scope
 
+Validation focues on:
+- Structural correctness
+- Governance enforcement
+- Network boundaries
+
 ## validation.md
 
 validation.md documents usage oriented validation scenarios, written as short narratives describing:
