@@ -1,0 +1,22 @@
+{
+  "properties": {
+    "displayName": "Restrict creation of public IP resource",
+    "policyType": "Custom",
+    "mode": "Indexed",
+    "description": "Denies creation of public IP address resources to enforce private by default workloads",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Network"
+    },
+    "version": "1.0.0",
+    "policyRule": {
+      "if": {
+        "field": "type",
+        "equals": "Microsoft.Network/publicIPAddresses"
+      },
+      "then": {
+        "effect": "deny"
+      }
+    }
+  }
+}
