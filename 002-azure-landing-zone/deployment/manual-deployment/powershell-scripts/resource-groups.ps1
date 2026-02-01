@@ -10,12 +10,12 @@ function operationOutput {
         $resource
     )
     switch ($operation) {
-        "SKIPPED_FOUND"         { Write-Output "[SKIPPED] Resource group '$resource' already exists" }
-        "SKIPPED_NOT_FOUND"     { Write-Output "[SKIPPED] Resource group '$resource' doesn't exists" }
-        "CREATE_FAILED"         { Write-Output "[FAILED] Failed to create resource group: $resource" }
-        "DELETE_FAILED"         { Write-Output "[FAILED] Failed to delete resource group: $resource" }
-        "CREATE_SUCCEED"        { Write-Output "[SUCCESS] Created resource group: $resource" }
-        "DELETE_SUCCEED"        { Write-Output "[SUCCESS] Deleted resource group: $resource" }
+        "SKIPPED_FOUND"         { Write-Host "[SKIPPED] Resource group '$resource' already exists"  -ForegroundColor Yellow }
+        "SKIPPED_NOT_FOUND"     { Write-Host "[SKIPPED] Resource group '$resource' doesn't exists"  -ForegroundColor Yellow }
+        "CREATE_FAILED"         { Write-Host "[FAILED] Failed to create resource group: $resource"  -ForegroundColor Red    }
+        "DELETE_FAILED"         { Write-Host "[FAILED] Failed to delete resource group: $resource"  -ForegroundColor Red    }
+        "CREATE_SUCCEED"        { Write-Host "[SUCCESS] Created resource group: $resource"          -ForegroundColor Green  }
+        "DELETE_SUCCEED"        { Write-Host "[SUCCESS] Deleted resource group: $resource"          -ForegroundColor Green  }
     }    
 }
 

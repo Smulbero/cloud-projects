@@ -10,12 +10,12 @@ function operationOutput {
         $resource
     )
     switch ($operation) {
-        "SKIPPED_FOUND"         { Write-Output "[SKIPPED] AD group '$resource' already exists" }
-        "SKIPPED_NOT_FOUND"     { Write-Output "[SKIPPED] AD group '$resource' doesn't exists" }
-        "CREATE_FAILED"         { Write-Output "[FAILED] Failed to create ad group: $resource" }
-        "DELETE_FAILED"         { Write-Output "[FAILED] Failed to delete ad group: $resource" }
-        "CREATE_SUCCEED"        { Write-Output "[SUCCESS] Created ad group: $resource" }
-        "DELETE_SUCCEED"        { Write-Output "[SUCCESS] Deleted ad group: $resource" }
+        "SKIPPED_FOUND"         { Write-Host "[SKIPPED] AD group '$resource' already exists"    -ForegroundColor Yellow }
+        "SKIPPED_NOT_FOUND"     { Write-Host "[SKIPPED] AD group '$resource' doesn't exists"    -ForegroundColor Yellow }
+        "CREATE_FAILED"         { Write-Host "[FAILED] Failed to create ad group: $resource"    -ForegroundColor Red    }
+        "DELETE_FAILED"         { Write-Host "[FAILED] Failed to delete ad group: $resource"    -ForegroundColor Red    }
+        "CREATE_SUCCEED"        { Write-Host "[SUCCESS] Created ad group: $resource"            -ForegroundColor Green  }
+        "DELETE_SUCCEED"        { Write-Host "[SUCCESS] Deleted ad group: $resource"            -ForegroundColor Green  }
     }    
 }
 

@@ -11,12 +11,12 @@ function operationOutput {
         $resource
     )
     switch ($operation) {
-        "SKIPPED_FOUND" { Write-Output "[SKIPPED] Virtual network '$resource' already exists" }
-        "SKIPPED_NOT_FOUND" { Write-Output "[SKIPPED] Virtual network '$resource' doesn't exists" }
-        "CREATE_FAILED" { Write-Output "[FAILED] Failed to create virtual network: $resource" }
-        "DELETE_FAILED" { Write-Output "[FAILED] Failed to delete virtual network: $resource" }
-        "CREATE_SUCCEED" { Write-Output "$[SUCCESS] Created virtual network: $resource" }
-        "DELETE_SUCCEED" { Write-Output "$[SUCCESS] Deleted virtual network: $resource" }
+        "SKIPPED_FOUND"     { Write-Host "[SKIPPED] Virtual network '$resource' already exists"     -ForegroundColor Yellow }
+        "SKIPPED_NOT_FOUND" { Write-Host "[SKIPPED] Virtual network '$resource' doesn't exists"     -ForegroundColor Yellow }
+        "CREATE_FAILED"     { Write-Host "[FAILED] Failed to create virtual network: $resource"     -ForegroundColor Red    }
+        "DELETE_FAILED"     { Write-Host "[FAILED] Failed to delete virtual network: $resource"     -ForegroundColor Red    }
+        "CREATE_SUCCEED"    { Write-Host "[SUCCESS] Created virtual network: $resource"             -ForegroundColor Green  }
+        "DELETE_SUCCEED"    { Write-Host "[SUCCESS] Deleted virtual network: $resource"             -ForegroundColor Green  }
     }    
 }
 
