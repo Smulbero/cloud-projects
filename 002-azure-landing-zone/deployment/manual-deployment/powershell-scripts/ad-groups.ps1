@@ -42,7 +42,9 @@ function createAdGroups {
     $skipped = 0
     $failed = 0
 
-    Write-Output "## Creating groups.. ##"    
+    Write-Output "# --------------------"
+    Write-Output "# Creating ad groups.."
+    Write-Output "# --------------------"   
     foreach ($d in $data) {
         # Check if group already exists
         $existingGroup = az ad group list --filter "MailNickname eq '$($d.mailNickname)'" --query "[0].id" -o tsv
@@ -67,8 +69,13 @@ function createAdGroups {
             $created++
         }
     }
-    Write-Output "## groups created. ##"
-    Write-Output "Summary"    
+    Write-Output "# --------------------"
+    Write-Output "# ..ad groups created"
+    Write-Output "# --------------------"
+    Write-Output ""
+    Write-Output "# --------------------"
+    Write-Output "# Summary"
+    Write-Output "# --------------------"     
     Write-Output "Created: $created"    
     Write-Output "Skipped: $skipped"    
     Write-Output "Failed: $failed"    
@@ -100,7 +107,9 @@ function deleteAdGroups {
         return
     }
 
-    Write-Output "## Deleting groups.. ##"
+    Write-Output "# --------------------"
+    Write-Output "# Deleting ad groups.."
+    Write-Output "# --------------------"
     
     foreach($d in $data) {
 
@@ -127,8 +136,13 @@ function deleteAdGroups {
         }
     }
 
-    Write-Output "## groups deleted. ##"
-    Write-Output "Summary"    
+    Write-Output "# --------------------"
+    Write-Output "# ..ad groups deleted"
+    Write-Output "# --------------------" 
+    Write-Output ""
+    Write-Output "# --------------------"
+    Write-Output "# Summary"
+    Write-Output "# --------------------"     
     Write-Output "Deleted: $deleted"    
     Write-Output "Skipped: $skipped"    
     Write-Output "Failed: $failed"

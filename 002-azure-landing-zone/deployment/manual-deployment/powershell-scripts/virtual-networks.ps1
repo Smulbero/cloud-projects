@@ -79,7 +79,9 @@ function createVirtualNetworks {
     $skipped = 0
     $failed = 0    
 
-    Write-Output "## Creating virtual networks.. ##"
+    Write-Output "# --------------------"
+    Write-Output "# Creating virtual networks.."
+    Write-Output "# --------------------"
     foreach ($d in $data) {
         $resource_group = getResourceGroupInfo -name $d.name
         $resource_name = "$($RESOURCE_VNET_PREFIX)-$($d.name)-$($resource_group.location)"
@@ -127,8 +129,13 @@ function createVirtualNetworks {
             $created++
         }
     }
-    Write-Output "## virtual networks created. ##"
-    Write-Output "Summary"    
+    Write-Output "# --------------------"
+    Write-Output "# ..virtual networks created"
+    Write-Output "# --------------------"
+    Write-Output ""
+    Write-Output "# --------------------"
+    Write-Output "# Summary"
+    Write-Output "# --------------------"    
     Write-Output "Created: $created"    
     Write-Output "Skipped: $skipped"    
     Write-Output "Failed: $failed"    
@@ -159,8 +166,9 @@ function deleteVirtualNetworks {
         Write-Output "Aborting virtual network deletion"
         return
     }
-
-    Write-Output "## Creating virtual networks.. ##"
+    Write-Output "# --------------------"
+    Write-Output "# Deleting virtual networks.."
+    Write-Output "# --------------------"
     foreach ($d in $data) {
         $resource_group = az group list --query "[?contains(name, '$($d.name)')].{name:name, location:location}" |  Tee-Object -filepath ConvertFrom-Json
         $resource_name = "$($RESOURCE_VNET_PREFIX)-$($d.name)-$($resource_group.location)"
@@ -193,8 +201,13 @@ function deleteVirtualNetworks {
             $deleted++
         }
     }
-    Write-Output "## resource groups deleted. ##"
-    Write-Output "Summary"    
+    Write-Output "# --------------------"
+    Write-Output "# ..virtual networks deleted"
+    Write-Output "# --------------------"
+    Write-Output ""
+    Write-Output "# --------------------"
+    Write-Output "# Summary"
+    Write-Output "# --------------------"    
     Write-Output "Deleted: $deleted"    
     Write-Output "Skipped: $skipped"    
     Write-Output "Failed: $failed"    

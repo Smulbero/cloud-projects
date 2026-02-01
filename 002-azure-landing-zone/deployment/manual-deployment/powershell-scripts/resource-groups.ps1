@@ -42,7 +42,9 @@ function createResourceGroups {
     $skipped = 0
     $failed = 0    
 
-    Write-Output "## Creating resource groups.. ##"
+    Write-Output "# --------------------"
+    Write-Output "# Creating resource groups.."
+    Write-Output "# --------------------"
     foreach($d in $data) {
         $resource_name = "$($RESOURCE_GROUP_PREFIX)-$($d.name)-$($d.location)"
 
@@ -83,8 +85,14 @@ function createResourceGroups {
             $created++
         }
     }
-    Write-Output "## resource groups created. ##"
-    Write-Output "Summary"    
+
+    Write-Output "# --------------------"
+    Write-Output "# ..resource groups created"
+    Write-Output "# --------------------"
+    Write-Output ""
+    Write-Output "# --------------------"
+    Write-Output "# Summary"
+    Write-Output "# --------------------"    
     Write-Output "Created: $created"    
     Write-Output "Skipped: $skipped"    
     Write-Output "Failed: $failed"    
@@ -116,7 +124,9 @@ function deleteResourceGroups {
         return
     }
 
-    Write-Output "## Creating resource groups.. ##"
+    Write-Output "# --------------------"
+    Write-Output "# Deleting resource groups.."
+    Write-Output "# --------------------"
     foreach($d in $data) {
         $resource_name = "$($RESOURCE_GROUP_PREFIX)-$($d.name)-$($d.location)"
         
@@ -144,8 +154,13 @@ function deleteResourceGroups {
             $deleted++
         }
     }
-    Write-Output "## resource groups deleted. ##"
-    Write-Output "Summary"    
+    Write-Output "# --------------------"
+    Write-Output "# ..resource groups deleted"
+    Write-Output "# --------------------"
+    Write-Output ""
+    Write-Output "# --------------------"
+    Write-Output "# Summary"
+    Write-Output "# --------------------"    
     Write-Output "Deleted: $deleted"    
     Write-Output "Skipped: $skipped"    
     Write-Output "Failed: $failed"    
