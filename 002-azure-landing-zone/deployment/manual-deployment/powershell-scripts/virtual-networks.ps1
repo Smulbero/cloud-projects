@@ -27,7 +27,7 @@ function getResourceGroupInfo {
         $name
     )
         
-    $resource_group = az group list --query "[?contains(name, '$($name)')]" | ConvertFrom-Json
+    $resource_group = az group list --query "[?contains(name, '$name')]" | ConvertFrom-Json
         
     return $resource_group
 }
@@ -90,7 +90,7 @@ function createVirtualNetworks {
         az network vnet show `
             --name $resource_name `
             --resource-group $resource_group.name `
-            -o none 2$null
+            --output none 2>$null
 
         if ($LASTEXITCODE -eq 0) {
             operationOutput -operation "SKIPPED_FOUND" -resource $resource_name
@@ -101,7 +101,7 @@ function createVirtualNetworks {
         if ($d.tags -and $d.tags.Count -gt 0) {
             # Create key=value tag pairs
             $tagsParam = @(
-                $d.tags.GetEnumerator() |  Tee-Object -filepath ForEach-Object { $_.Key, $_.Value -join '=' }
+                $d.tags.GetEnumerator() | ForEach-Object { $_.Key, $_.Value -join '=' }
             )
     
             az network vnet create `
@@ -109,7 +109,7 @@ function createVirtualNetworks {
                 --resource-group $resource_group.name `
                 --tags $tagsParam `
                 --no-wait `
-                --output none 2>&1 | Tee-Object -FilePath "logs/vnet-create-error" -Append | Out-Null
+                --output none 2>&1 | Tee-Object -FilePath "logs/vnet-create-error.log" -Append | Out-Null
         }
         else {
             # Attempt to create resource without tags
@@ -117,7 +117,7 @@ function createVirtualNetworks {
             az network vnet create `
                 --name $resource_name `
                 --resource-group $resource_group.name `
-                --output none 2>&1 | Tee-Object -FilePath "logs/vnet-create-error" -Append | Out-Null
+                --output none 2>&1 | Tee-Object -FilePath "logs/vnet-create-error.log" -Append | Out-Null
         }
 
         if ($LASTEXITCODE -ne 0) {
@@ -190,7 +190,7 @@ function deleteVirtualNetworks {
             --name $resource_name `
             --no-wait `
             --yes `
-            --output none 2>&1 | Tee-Object -FilePath "logs/vnet-delete-error" -Append | Out-Null
+            --output none 2>&1 | Tee-Object -FilePath "logs/vnet-delete-error.log" -Append | Out-Null
 
         if ($LASTEXITCODE -ne 0) {
             operationOutput -operation "DELETE_FAILED" -resource $resource_name

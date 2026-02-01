@@ -59,7 +59,7 @@ function createAdGroups {
         az ad group create `
             --display-name $d.displayName `
             --mail-nickname $d.mailNickname `
-            --output none
+            --output none 2>&1 | Tee-Object -FilePath "logs/ad-group-create-error.log" -Append | Out-Null
 
         if ($LASTEXITCODE -ne 0) {
             operationOutput -operation "CREATE_FAILED" -resource $d.displayName
@@ -125,7 +125,7 @@ function deleteAdGroups {
         # Delete the group
         az ad group delete `
             --group $existingGroup `
-            --output none
+            --output none 2>&1 | Tee-Object -FilePath "logs/ad-group-delete-error.log" -Append | Out-Null
 
         if ($LASTEXITCODE -ne 0) {
             operationOutput -operation "DELETE_FAILED" -resource $d.displayName

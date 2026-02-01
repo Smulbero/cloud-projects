@@ -67,14 +67,14 @@ function createResourceGroups {
                 --name $resource_name `
                 --location $d.location `
                 --tags $tagsParam `
-                --output none
+                --output none 2>&1 | Tee-Object -FilePath "logs/rg-create-error.log" -Append | Out-Null
         } else {
             # Attempt to create resource without tags
             # Shouldn't happen in this project since required tags are enforced
             az group create `
                 --name $resource_name `
                 --location $d.location `
-                --output none
+                --output none 2>&1 | Tee-Object -FilePath "logs/rg-create-error.log" -Append | Out-Null
         }
 
         if($LASTEXITCODE -ne 0) {
@@ -144,7 +144,7 @@ function deleteResourceGroups {
             --name $resource_name `
             --no-wait `
             --yes `
-            --output none
+            --output none 2>&1 | Tee-Object -FilePath "logs/rg-delete-error.log" -Append | Out-Null
 
         if($LASTEXITCODE -ne 0) {
             operationOutput -operation "DELETE_FAILED" -resource $resource_name

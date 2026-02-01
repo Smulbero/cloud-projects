@@ -73,6 +73,13 @@ $RESOURCE_GROUPS = @(
     }
 )
 
+$DEFAULT_TAGS = @{
+    CostCenter = "tbd"
+    Owner = "tbd"
+    DeployedMethod = "tbd"
+    DeployedDate = "tbd"
+}
+
 $VIRTUAL_NETWORKS = @(
     @{
         name = "connectivity"        
