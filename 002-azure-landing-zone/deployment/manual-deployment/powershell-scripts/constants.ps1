@@ -1,4 +1,10 @@
 $DEFAULT_LOCATION = "northeurope"
+$DEFAULT_TAGS = @{
+        CostCenter = "tbd"
+        Owner = "tbd"
+        DeployedMethod = "tbd"
+        DeployedDate = "tbd"
+    }
 
 $RESOURCE_GROUPS = @(
     @{
@@ -71,17 +77,10 @@ $RESOURCE_GROUPS = @(
             DeployedDate = ""
         }
     }
-)
-
-$DEFAULT_TAGS = @{
-    CostCenter = "tbd"
-    Owner = "tbd"
-    DeployedMethod = "tbd"
-    DeployedDate = "tbd"
-}
-
-$VIRTUAL_NETWORKS = @(
-    @{
+    )
+        
+    $VIRTUAL_NETWORKS = @(
+        @{
         name = "connectivity"        
         address_prefix = "10.10.0.0/16"
         tags = @{
@@ -128,6 +127,28 @@ $VIRTUAL_NETWORKS = @(
     @{
         name = "finance"        
         address_prefix = "10.50.0.0/16"
+        tags = @{
+            CostCenter = "tbd"
+            Owner = "tbd"
+            DeployedMethod = "tbd"
+            DeployedDate = "tbd"
+        }
+        network = "spoke"
+    }
+    @{
+        name = "testLocationPolicy"        
+        address_prefix = "10.60.0.0/16"
+        tags = @{
+            CostCenter = "tbd"
+            Owner = "tbd"
+            DeployedMethod = "tbd"
+            DeployedDate = "tbd"
+        }
+        network = "spoke"
+    }
+    @{
+        name = "testTagsPolicy"        
+        address_prefix = "10.70.0.0/16"
         tags = @{
             CostCenter = "tbd"
             Owner = "tbd"
