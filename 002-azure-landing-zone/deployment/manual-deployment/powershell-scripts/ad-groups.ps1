@@ -1,98 +1,72 @@
-
 # -------------------------------
-# Helper funtions start
-# -------------------------------
-
-function operationOutput {
-    param ( 
-        [Parameter(Mandatory=$true)]
-        $operation,
-        $resource
-    )
-    switch ($operation) {
-        "SKIPPED_FOUND"         { Write-Host "[SKIPPED] AD group '$resource' already exists"    -ForegroundColor Yellow }
-        "SKIPPED_NOT_FOUND"     { Write-Host "[SKIPPED] AD group '$resource' doesn't exists"    -ForegroundColor Yellow }
-        "CREATE_FAILED"         { Write-Host "[FAILED] Failed to create ad group: $resource"    -ForegroundColor Red    }
-        "DELETE_FAILED"         { Write-Host "[FAILED] Failed to delete ad group: $resource"    -ForegroundColor Red    }
-        "CREATE_SUCCEED"        { Write-Host "[SUCCESS] Created ad group: $resource"            -ForegroundColor Green  }
-        "DELETE_SUCCEED"        { Write-Host "[SUCCESS] Deleted ad group: $resource"            -ForegroundColor Green  }
-    }    
-}
-
-# -------------------------------
-# Helper funtions end
+# Core functions
 # -------------------------------
 
 # Create AD groups
 function createAdGroups {
     param (
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [ValidateScript({
-            foreach ($d in $_) {
-                if(!$d.displayName -or !$d.mailNickname) {
-                    throw "Given data must contain following properties: 'displayName', 'mailNickname'"
+                foreach ($d in $_) {
+                    if (!$d.displayName -or !$d.mailNickname) {
+                        throw "Given data must contain following properties: 'displayName', 'mailNickname'"
+                    }
                 }
-            }
-            return $true
-        })]
+                return $true
+            })]
         $data
     )
 
     $created = 0
     $skipped = 0
     $failed = 0
-
-    Write-Output "# --------------------"
-    Write-Output "# Creating ad groups.."
-    Write-Output "# --------------------"   
+ 
+    textBlock -str "Creating ad groups.."
+    
     foreach ($d in $data) {
         # Check if group already exists
-        $existingGroup = az ad group list --filter "MailNickname eq '$($d.mailNickname)'" --query "[0].id" -o tsv
-
-        if ($existingGroup) {
-            operationOutput -operation "SKIPPED_FOUND" -resource $d.displayName
+        $existing_group = getAdGroupInfo -display_name $d.displayName
+        if ($existing_group.id) {
+            operationOutput -operation "SKIPPED" -message "AD group '$($d.displayName)' already exists"
             $skipped++
             continue
         }
 
-        # Create the group
+        # Try to create new ad group
         az ad group create `
             --display-name $d.displayName `
             --mail-nickname $d.mailNickname `
             --output none 2>&1 | Tee-Object -FilePath "logs/ad-group-create-error.log" -Append | Out-Null
 
         if ($LASTEXITCODE -ne 0) {
-            operationOutput -operation "CREATE_FAILED" -resource $d.displayName
+            operationOutput -operation "FAILED" -message "Failed to create AD group: $($d.displayName)"
             $failed++
-        } else {
-            operationOutput -operation "CREATE_SUCCEED" -resource $d.displayName
+        }
+        else {
+            operationOutput -operation "SUCCEED" -message "Created AD group: $($d.displayName)"
             $created++
         }
     }
-    Write-Output "# --------------------"
-    Write-Output "# ..ad groups created"
-    Write-Output "# --------------------"
-    Write-Output ""
-    Write-Output "# --------------------"
-    Write-Output "# Summary"
-    Write-Output "# --------------------"     
-    Write-Output "Created: $created"    
-    Write-Output "Skipped: $skipped"    
-    Write-Output "Failed: $failed"    
+  
+    textBlock -str "..ad groups created"
+    textBlock -str "Summary"
+    operationOutput -operation "SUCCEED" -message "Created: $created"     
+    operationOutput -operation "SKIPPED" -message "Skipped: $skipped"     
+    operationOutput -operation "FAILED" -message "Failed: $failed`n" 
 }
 
 # Delete AD groups
 function deleteAdGroups {
     param (
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [ValidateScript({
-            foreach ($d in $_) {
-                if(!$d.displayName) {
-                    throw "Given data must contain following properties: 'displayName'"
+                foreach ($d in $_) {
+                    if (!$d.displayName) {
+                        throw "Given data must contain following properties: 'displayName'"
+                    }
                 }
-            }
-            return $true
-        })]
+                return $true
+            })]
         $data
     )
 
@@ -102,50 +76,100 @@ function deleteAdGroups {
 
     $confirmation = (Read-Host "Delete given AD groups? (y/n)").ToLower()
 
-    if($confirmation -eq "n") {
-        Write-Output "Aborting AD group deletion"
+    if ($confirmation -eq "n") {
+        Write-Host "Aborting AD group deletion"
         return
     }
 
-    Write-Output "# --------------------"
-    Write-Output "# Deleting ad groups.."
-    Write-Output "# --------------------"
-    
-    foreach($d in $data) {
+    textBlock -str "Deleting ad groups.."
+
+    foreach ($d in $data) {
 
         # Check if group exists
-        $existingGroup = az ad group list --filter "DisplayName eq '$($d.displayName)'" --query "[0].id" -o tsv
-
-        if (!$existingGroup) {
-            operationOutput -operation "SKIPPED_NOT_FOUND" -resource $d.displayName
+        $existing_group = getAdGroupInfo -display_name $d.displayName
+        if (!$existing_group.id) {
+            operationOutput -operation "SKIPPED" -message "AD group '$($d.displayName)' doesn't exist"
             $skipped++
             continue
         }
 
-        # Delete the group
+        # Try to delete the ad group
         az ad group delete `
-            --group $existingGroup `
+            --group $existing_group.id `
             --output none 2>&1 | Tee-Object -FilePath "logs/ad-group-delete-error.log" -Append | Out-Null
 
         if ($LASTEXITCODE -ne 0) {
-            operationOutput -operation "DELETE_FAILED" -resource $d.displayName
+            operationOutput -operation "FAILED" -message "Failed to delete AD group: $($d.displayName)"
             $failed++
-        } else {
-            operationOutput -operation "DELETE_SUCCEED" -resource $d.displayName
+        }
+        else {
+            operationOutput -operation "SUCCEED" -message "Deleted AD group: $($d.displayName)"
             $deleted++
         }
     }
 
-    Write-Output "# --------------------"
-    Write-Output "# ..ad groups deleted"
-    Write-Output "# --------------------" 
-    Write-Output ""
-    Write-Output "# --------------------"
-    Write-Output "# Summary"
-    Write-Output "# --------------------"     
-    Write-Output "Deleted: $deleted"    
-    Write-Output "Skipped: $skipped"    
-    Write-Output "Failed: $failed"
+    textBlock -str "..ad groups deleted"
+    textBlock -str "Summary"
+    operationOutput -operation "SUCCEED" -message "Deleted: $deleted"     
+    operationOutput -operation "SKIPPED" -message "Skipped: $skipped"     
+    operationOutput -operation "FAILED" -message "Failed: $failed`n"   
 }
 
 # Function for permission assignments?
+function assignPermissions {
+    param (
+        [Parameter(Mandatory = $true)]
+        [ValidateScript({
+                foreach ($d in $_) {
+                    if (!$d.permission_assignments -or !$d.permission_assignments.scope -or !$d.permission_assignments.permissions) {
+                        throw "Given data must contain following properties: object 'permission_assignments' with properties 'scope', 'permissions'"
+                    }
+                }
+                return $true
+            })]
+        $data
+    )    
+
+    $assigned = 0
+    $skipped = 0
+    $failed = 0
+
+    textBlock -str "Assigning permissions to ad groups.."
+    
+    foreach ($d in $data) {
+        $ad_group = getAdGroupInfo -display_name $d.displayName
+
+        if(!$ad_group) {
+            operationOutput -operation "SKIPPED" -message "AD group '$($d.displayName)' doesn't exist"
+            $skipped++
+            continue
+        }
+
+        # Build scope string
+        $scope = getScopeInfo -str $d.permission_assignments.scope
+        foreach ($permission in $d.permission_assignments.permissions) {
+            # Try to assing role to the scope
+            az role assignment create `
+                --role $permission `
+                --scope $scope `
+                --assignee $ad_group.id `
+                --output none 2>&1 | Tee-Object -FilePath "logs/ag-permission-tbd.log" -Append | Out-Null
+
+            if ($LASTEXITCODE -ne 0) {
+                operationOutput -operation "FAILED" -message "Failed to assign permissions to ad group: $($ad_group.displayName)"
+                $failed++
+            }
+            else {
+                operationOutput -operation "SUCCEED" -message "Assigned permission '$permission' to ad group '$($ad_group.displayName)' on scope '$($d.permission_assignments.scope)'"
+                $assigned++
+            }
+        }
+    }
+
+    textBlock -str "..permissions assigned"
+    textBlock -str "Summary"
+    operationOutput -operation "SUCCEED" -message "Assigned: $assigned"     
+    operationOutput -operation "SKIPPED" -message "Skipped: $skipped"     
+    operationOutput -operation "FAILED" -message "Failed: $failed`n"   
+}
+
