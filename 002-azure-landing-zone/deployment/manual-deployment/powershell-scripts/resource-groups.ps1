@@ -1,26 +1,5 @@
-$RESOURCE_GROUP_PREFIX = "rg"
-
 # -------------------------------
-# Helper funtions start
-# -------------------------------
-function operationOutput {
-    param ( 
-        [Parameter(Mandatory=$true)]
-        $operation,
-        $resource
-    )
-    switch ($operation) {
-        "SKIPPED_FOUND"         { Write-Host "[SKIPPED] Resource group '$resource' already exists"  -ForegroundColor Yellow }
-        "SKIPPED_NOT_FOUND"     { Write-Host "[SKIPPED] Resource group '$resource' doesn't exists"  -ForegroundColor Yellow }
-        "CREATE_FAILED"         { Write-Host "[FAILED] Failed to create resource group: $resource"  -ForegroundColor Red    }
-        "DELETE_FAILED"         { Write-Host "[FAILED] Failed to delete resource group: $resource"  -ForegroundColor Red    }
-        "CREATE_SUCCEED"        { Write-Host "[SUCCESS] Created resource group: $resource"          -ForegroundColor Green  }
-        "DELETE_SUCCEED"        { Write-Host "[SUCCESS] Deleted resource group: $resource"          -ForegroundColor Green  }
-    }    
-}
-
-# -------------------------------
-# Helper funtions end
+# Core functions
 # -------------------------------
 
 # Create resource groups
@@ -42,20 +21,20 @@ function createResourceGroups {
     $skipped = 0
     $failed = 0    
 
-    Write-Output "# --------------------"
-    Write-Output "# Creating resource groups.."
-    Write-Output "# --------------------"
+    Write-Host "# --------------------"
+    Write-Host "# Creating resource groups.."
+    Write-Host "# --------------------"
     foreach($d in $data) {
-        $resource_name = "$($RESOURCE_GROUP_PREFIX)-$($d.name)-$($d.location)"
-
+        
         # Check if resource already exists
-        $existingRg = az group exists --name $resource_name
-
-        if($existingRg -eq "true") {
-            operationOutput -operation "SKIPPED_FOUND" -resource $resource_name            
+        $existing_resource = getResourceGroupInfo -name $d.name
+        if($existing_resource.id) {
+            operationOutput -operation "SKIPPED" -message "Resource group '$($existing_resource.name)' already exists"            
             $skipped++
             continue
         }
+
+        $resource_name = "$($RESOURCE_GROUP_PREFIX)-$($d.name)-$($d.location)"
 
         if($d.tags -and $d.tags.Count -gt 0) {
             # Create key=value tag pairs
@@ -78,24 +57,23 @@ function createResourceGroups {
         }
 
         if($LASTEXITCODE -ne 0) {
-            operationOutput -operation "CREATE_FAILED" -resource $resource_name
+           operationOutput -operation "FAILED" -message "Failed to create resource group: $resource_name" 
             $failed++
         } else {
-            operationOutput -operation "CREATE_SUCCEED" -resource $resource_name
+            operationOutput -operation "SUCCEED" -message "Created resource group: $resource_name" 
             $created++
         }
     }
 
-    Write-Output "# --------------------"
-    Write-Output "# ..resource groups created"
-    Write-Output "# --------------------"
-    Write-Output ""
-    Write-Output "# --------------------"
-    Write-Output "# Summary"
-    Write-Output "# --------------------"    
-    Write-Output "Created: $created"    
-    Write-Output "Skipped: $skipped"    
-    Write-Output "Failed: $failed"    
+    Write-Host "# --------------------"
+    Write-Host "# ..resource groups created"
+    Write-Host "# --------------------`n"
+    Write-Host "# --------------------"
+    Write-Host "# Summary"
+    Write-Host "# --------------------"    
+    Write-Host "Created: $created"    
+    Write-Host "Skipped: $skipped"    
+    Write-Host "Failed: $failed`n"    
 }
 
 # Delete resource groups
@@ -120,48 +98,45 @@ function deleteResourceGroups {
     $confirmation = (Read-Host "Delete given resource groups? (y/n)").ToLower()
 
     if($confirmation -eq "n") {
-        Write-Output "Aborting resource group deletion"
+        Write-Host "Aborting resource group deletion"
         return
     }
 
-    Write-Output "# --------------------"
-    Write-Output "# Deleting resource groups.."
-    Write-Output "# --------------------"
+    Write-Host "# --------------------"
+    Write-Host "# Deleting resource groups.."
+    Write-Host "# --------------------"
     foreach($d in $data) {
-        $resource_name = "$($RESOURCE_GROUP_PREFIX)-$($d.name)-$($d.location)"
-        
         # Check if resource exists
-        $existingRg = az group exists --name "$($RESOURCE_GROUP_PREFIX)-$($d.name)-$($d.location)"
-
-        if($existingRg -eq "false") {
-            operationOutput -operation "SKIPPED_NOT_FOUND" -resource $resource_name 
+        $existing_resource = getResourceGroupInfo -name $d.name
+        if(!$existing_resource.id) {
+            $resource = "$RESOURCE_GROUP_PREFIX-$($d.name)-$($d.location)"
+            operationOutput -operation "SKIPPED" -message "Resource group '$resource' doesn't exist"          
             $skipped++
             continue
-        }
+        }        
         
         # Try to delete resource
         az group delete `
-            --name $resource_name `
+            --name $existing_resource.name `
             --no-wait `
             --yes `
             --output none 2>&1 | Tee-Object -FilePath "logs/rg-delete-error.log" -Append | Out-Null
 
         if($LASTEXITCODE -ne 0) {
-            operationOutput -operation "DELETE_FAILED" -resource $resource_name
+            operationOutput -operation "FAILED" -message "Failed to delete resource group: $($existing_resource.name)" 
             $failed++
         } else {
-            operationOutput -operation "DELETE_SUCCEED" -resource $resource_name
+            operationOutput -operation "SUCCEED" -message "Deleted resource group: $($existing_resource.name)"  
             $deleted++
         }
     }
-    Write-Output "# --------------------"
-    Write-Output "# ..resource groups deleted"
-    Write-Output "# --------------------"
-    Write-Output ""
-    Write-Output "# --------------------"
-    Write-Output "# Summary"
-    Write-Output "# --------------------"    
-    Write-Output "Deleted: $deleted"    
-    Write-Output "Skipped: $skipped"    
-    Write-Output "Failed: $failed"    
+    Write-Host "# --------------------"
+    Write-Host "# ..resource groups deleted"
+    Write-Host "# --------------------`n"
+    Write-Host "# --------------------"
+    Write-Host "# Summary"
+    Write-Host "# --------------------"    
+    Write-Host "Deleted: $deleted"    
+    Write-Host "Skipped: $skipped"    
+    Write-Host "Failed: $failed`n"    
 }
