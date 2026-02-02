@@ -5,6 +5,8 @@ $DEFAULT_TAGS = @{
         DeployedMethod = "tbd"
         DeployedDate = "tbd"
     }
+$RESOURCE_GROUP_PREFIX = "rg"
+$VNET_PREFIX = "vnet"
 
 $RESOURCE_GROUPS = @(
     @{
@@ -79,7 +81,7 @@ $RESOURCE_GROUPS = @(
     }
     )
         
-    $VIRTUAL_NETWORKS = @(
+$VIRTUAL_NETWORKS = @(
         @{
         name = "connectivity"        
         address_prefix = "10.10.0.0/16"
@@ -164,7 +166,7 @@ $AD_GROUPS = @(
         displayName = "Platform Admins"
         mailNickname = "PlatformAdmins"
         permission_assignments = @{
-            scope = ""
+            scope = "subscription"
             permissions = "Owner"
         }
     },
@@ -172,7 +174,7 @@ $AD_GROUPS = @(
         displayName = "Platform readers"
         mailNickname = "PlatformReaders"
         permission_assignments = @{
-            scope = ""
+            scope = "subscription"
             permissions = "Reader"
         }        
     },
@@ -180,7 +182,7 @@ $AD_GROUPS = @(
         displayName = "Identity admins"
         mailNickname = "IdentityAdmins"
         permission_assignments = @{
-            scope = ""
+            scope = "rg-identity"
             permissions = @("Contributor", "Reader")
         }        
     },
@@ -188,7 +190,7 @@ $AD_GROUPS = @(
         displayName = "Identity contributors"         
         mailNickname = "IdentityContributors"
         permission_assignments = @{
-            scope = ""
+            scope = "rg-identity"
             permissions = "Contributor"
         }
     },
@@ -196,7 +198,7 @@ $AD_GROUPS = @(
         displayName = "Identity operators"            
         mailNickname = "IdentityOperators"
         permission_assignments = @{
-            scope = ""
+            scope = "rg-identity"
             permissions = @("Managed Identity Operator", "Reader")
         }
     },
@@ -204,7 +206,7 @@ $AD_GROUPS = @(
         displayName = "Management admins"             
         mailNickname = "ManagementAdmins"
         permission_assignments = @{
-            scope = ""
+            scope = "rg-management"
             permissions = @("Contributor", "Reader")
         }
     },
@@ -212,7 +214,7 @@ $AD_GROUPS = @(
         displayName = "Management contributors"       
         mailNickname = "ManagementContributors"
         permission_assignments = @{
-            scope = ""
+            scope = "rg-management"
             permissions = "Contributor"
         }
     },
@@ -220,7 +222,7 @@ $AD_GROUPS = @(
         displayName = "Connectivity admins"           
         mailNickname = "ConnectivityAdmins"
         permission_assignments = @{
-            scope = ""
+            scope = "rg-connectivity"
             permissions = @("Contributor", "Reader")
         }
     },
@@ -228,7 +230,7 @@ $AD_GROUPS = @(
         displayName = "Connectivity contributors"     
         mailNickname = "ConnectivityContributors"
         permission_assignments = @{
-            scope = ""
+            scope = "rg-connectivity"
             permissions = "Network Contributor"
         }
     },
@@ -236,7 +238,7 @@ $AD_GROUPS = @(
         displayName = "Security admins"               
         mailNickname = "SecurityAdmins"
         permission_assignments = @{
-            scope = ""
+            scope = "rg-security"
             permissions = @("Contributor", "Reader")
         }
     },
@@ -244,7 +246,7 @@ $AD_GROUPS = @(
         displayName = "Security contributors"         
         mailNickname = "SecurityContributors"
         permission_assignments = @{
-            scope = ""
+            scope = "rg-security"
             permissions = "Contributor"
         }
     },
@@ -252,7 +254,7 @@ $AD_GROUPS = @(
         displayName = "Security operators"            
         mailNickname = "SecurityOperators"
         permission_assignments = @{
-            scope = ""
+            scope = "rg-security"
             permissions = "Security Admin"
         }
     }
