@@ -16,12 +16,27 @@ function operationOutput {
 
 function textBlock {
     param (
-        $str
+        $message
     )
     
     Write-Host "# ------------------------------"
-    Write-Host "# $str"
+    Write-Host "# $message"
     Write-Host "# ------------------------------"
+    Write-Host ""
+}
+
+function summaryBlock {
+    param (
+        $printOuts
+    )
+    
+    textBlock -str "Summary"
+
+    foreach($printOut in $printOuts) {
+        operationOutput -operation $printOut.operation -message $printOut.message
+    }
+
+    Write-Host ""
 }
 
 # Returns subscription object

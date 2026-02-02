@@ -20,10 +20,9 @@ function createVirtualNetworks {
     $created = 0
     $skipped = 0
     $failed = 0    
+   
+    textBlock -message "Creating virtual networks.."
 
-    Write-Host "# --------------------"
-    Write-Host "# Creating virtual networks.."
-    Write-Host "# --------------------"
     foreach ($d in $data) {
         # Check if resource exists
         $existing_resource = (getNetworkInfo -name $d.name)
@@ -76,15 +75,22 @@ function createVirtualNetworks {
             $created++
         }
     }
-    Write-Host "# --------------------"
-    Write-Host "# ..virtual networks created"
-    Write-Host "# --------------------`n"
-    Write-Host "# --------------------"
-    Write-Host "# Summary"
-    Write-Host "# --------------------"    
-    Write-Host "Created: $created"    
-    Write-Host "Skipped: $skipped"    
-    Write-Host "Failed: $failed`n"    
+
+    textBlock -message "..virtual networks created"
+    summaryBlock -printOuts @(
+        @{
+            operation = "SUCCEED"
+            message = "Created: $created"
+        }
+        @{
+            operation = "SKIPPED"
+            message = "Skipped: $skipped"
+        }
+        @{
+            operation = "FAILED"
+            message = "Failed: $failed"
+        }
+    )  
 }
 
 # Delete virtual networks
@@ -112,9 +118,9 @@ function deleteVirtualNetworks {
         Write-Host "Aborting virtual network deletion"
         return
     }
-    Write-Host "# --------------------"
-    Write-Host "# Deleting virtual networks.."
-    Write-Host "# --------------------"
+
+    textBlock -message "Deleting virtual networks.."
+
     foreach ($d in $data) {
         # Check if resource exists
         $existing_resource = (getNetworkInfo -name $d.name)       
@@ -140,15 +146,22 @@ function deleteVirtualNetworks {
             $deleted++
         }
     }
-    Write-Host "# --------------------"
-    Write-Host "# ..virtual networks deleted"
-    Write-Host "# --------------------`n"
-    Write-Host "# --------------------"
-    Write-Host "# Summary"
-    Write-Host "# --------------------"    
-    Write-Host "Deleted: $deleted"    
-    Write-Host "Skipped: $skipped"    
-    Write-Host "Failed: $failed`n"    
+  
+    textBlock -message "..virtual networks deleted"
+    summaryBlock -printOuts @(
+        @{
+            operation = "SUCCEED"
+            message = "Deleted: $deleted"
+        }
+        @{
+            operation = "SKIPPED"
+            message = "Skipped: $skipped"
+        }
+        @{
+            operation = "FAILED"
+            message = "Failed: $failed"
+        }
+    )  
 }
 
 # Create network peerings
@@ -173,9 +186,7 @@ function createHubAndSpoke {
     $hub_network = $null
     $spoke_network = $null
 
-    Write-Host "# --------------------"
-    Write-Host "# Peering vnets.."
-    Write-Host "# --------------------"
+    textBlock -message "Peering vnets.."
 
     # Get a vnet with hub assignment, break the loop on first match
     foreach ($d in $data) {
@@ -250,13 +261,19 @@ function createHubAndSpoke {
         }
     }
 
-    Write-Host "# --------------------"
-    Write-Host "# ..vnet peering done"
-    Write-Host "# --------------------`n"
-    Write-Host "# --------------------"
-    Write-Host "# Summary"
-    Write-Host "# --------------------"    
-    Write-Host "Created: $created"    
-    Write-Host "Skipped: $skipped"    
-    Write-Host "Failed: $failed`n" 
+    textBlock -message "..vnet peering done"
+    summaryBlock -printOuts @(
+        @{
+            operation = "SUCCEED"
+            message = "Created: $created"
+        }
+        @{
+            operation = "SKIPPED"
+            message = "Skipped: $skipped"
+        }
+        @{
+            operation = "FAILED"
+            message = "Failed: $failed"
+        }
+    ) 
 }

@@ -21,7 +21,7 @@ function createAdGroups {
     $skipped = 0
     $failed = 0
  
-    textBlock -str "Creating ad groups.."
+    textBlock -message "Creating ad groups.."
     
     foreach ($d in $data) {
         # Check if group already exists
@@ -48,11 +48,21 @@ function createAdGroups {
         }
     }
   
-    textBlock -str "..ad groups created"
-    textBlock -str "Summary"
-    operationOutput -operation "SUCCEED" -message "Created: $created"     
-    operationOutput -operation "SKIPPED" -message "Skipped: $skipped"     
-    operationOutput -operation "FAILED" -message "Failed: $failed`n" 
+    textBlock -message "..ad groups created"
+    summaryBlock -printOuts @(
+        @{
+            operation = "SUCCEED"
+            message = "Created: $created"
+        }
+        @{
+            operation = "SKIPPED"
+            message = "Skipped: $skipped"
+        }
+        @{
+            operation = "FAILED"
+            message = "Failed: $failed"
+        }
+    )
 }
 
 # Delete AD groups
@@ -81,7 +91,7 @@ function deleteAdGroups {
         return
     }
 
-    textBlock -str "Deleting ad groups.."
+    textBlock -message "Deleting ad groups.."
 
     foreach ($d in $data) {
 
@@ -108,11 +118,21 @@ function deleteAdGroups {
         }
     }
 
-    textBlock -str "..ad groups deleted"
-    textBlock -str "Summary"
-    operationOutput -operation "SUCCEED" -message "Deleted: $deleted"     
-    operationOutput -operation "SKIPPED" -message "Skipped: $skipped"     
-    operationOutput -operation "FAILED" -message "Failed: $failed`n"   
+    textBlock -message "..ad groups deleted"
+    summaryBlock -printOuts @(
+        @{
+            operation = "SUCCEED"
+            message = "Deleted: $deleted"
+        }
+        @{
+            operation = "SKIPPED"
+            message = "Skipped: $skipped"
+        }
+        @{
+            operation = "FAILED"
+            message = "Failed: $failed"
+        }
+    ) 
 }
 
 # Function for permission assignments?
@@ -134,7 +154,7 @@ function assignPermissions {
     $skipped = 0
     $failed = 0
 
-    textBlock -str "Assigning permissions to ad groups.."
+    textBlock -message "Assigning permissions to ad groups.."
     
     foreach ($d in $data) {
         $ad_group = getAdGroupInfo -display_name $d.displayName
@@ -166,10 +186,20 @@ function assignPermissions {
         }
     }
 
-    textBlock -str "..permissions assigned"
-    textBlock -str "Summary"
-    operationOutput -operation "SUCCEED" -message "Assigned: $assigned"     
-    operationOutput -operation "SKIPPED" -message "Skipped: $skipped"     
-    operationOutput -operation "FAILED" -message "Failed: $failed`n"   
+    textBlock -message "..permissions assigned"
+    summaryBlock -printOuts @(
+        @{
+            operation = "SUCCEED"
+            message = "Assigned: $assigned"
+        }
+        @{
+            operation = "SKIPPED"
+            message = "Skipped: $skipped"
+        }
+        @{
+            operation = "FAILED"
+            message = "Failed: $failed"
+        }
+    )
 }
 

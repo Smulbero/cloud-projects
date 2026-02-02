@@ -21,9 +21,8 @@ function createResourceGroups {
     $skipped = 0
     $failed = 0    
 
-    Write-Host "# --------------------"
-    Write-Host "# Creating resource groups.."
-    Write-Host "# --------------------"
+    textBlock -message "Creating resource groups.."
+
     foreach($d in $data) {
         
         # Check if resource already exists
@@ -65,15 +64,21 @@ function createResourceGroups {
         }
     }
 
-    Write-Host "# --------------------"
-    Write-Host "# ..resource groups created"
-    Write-Host "# --------------------`n"
-    Write-Host "# --------------------"
-    Write-Host "# Summary"
-    Write-Host "# --------------------"    
-    Write-Host "Created: $created"    
-    Write-Host "Skipped: $skipped"    
-    Write-Host "Failed: $failed`n"    
+    textBlock -message "..resource groups created"
+    summaryBlock -printOuts @(
+        @{
+            operation = "SUCCEED"
+            message = "Created: $created"
+        }
+        @{
+            operation = "SKIPPED"
+            message = "Skipped: $skipped"
+        }
+        @{
+            operation = "FAILED"
+            message = "Failed: $failed"
+        }
+    )  
 }
 
 # Delete resource groups
@@ -102,9 +107,8 @@ function deleteResourceGroups {
         return
     }
 
-    Write-Host "# --------------------"
-    Write-Host "# Deleting resource groups.."
-    Write-Host "# --------------------"
+    textBlock -message "Deleting resource groups.."
+
     foreach($d in $data) {
         # Check if resource exists
         $existing_resource = getResourceGroupInfo -name $d.name
@@ -130,13 +134,20 @@ function deleteResourceGroups {
             $deleted++
         }
     }
-    Write-Host "# --------------------"
-    Write-Host "# ..resource groups deleted"
-    Write-Host "# --------------------`n"
-    Write-Host "# --------------------"
-    Write-Host "# Summary"
-    Write-Host "# --------------------"    
-    Write-Host "Deleted: $deleted"    
-    Write-Host "Skipped: $skipped"    
-    Write-Host "Failed: $failed`n"    
+
+    textBlock -message "..resource groups deleted"
+    summaryBlock -printOuts @(
+        @{
+            operation = "SUCCEED"
+            message = "Deleted: $deleted"
+        }
+        @{
+            operation = "SKIPPED"
+            message = "Skipped: $skipped"
+        }
+        @{
+            operation = "FAILED"
+            message = "Failed: $failed"
+        }
+    )  
 }
