@@ -30,7 +30,7 @@ function summaryBlock {
         $printOuts
     )
     
-    textBlock -str "Summary"
+    textBlock -message "Summary"
 
     foreach($printOut in $printOuts) {
         operationOutput -operation $printOut.operation -message $printOut.message
