@@ -2,7 +2,7 @@
   "properties": {
     "displayName": "Restrict creation of public IP resource",
     "policyType": "Custom",
-    "mode": "Indexed",
+    "mode": "All",
     "description": "Denies creation of public IP address resources to enforce private by default workloads",
     "metadata": {
       "version": "1.0.0",

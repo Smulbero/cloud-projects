@@ -2,7 +2,7 @@
   "properties": {
     "displayName": "Require tags on resources",
     "policyType": "Custom",
-    "mode": "Indexed",
+    "mode": "All",
     "description": "Enforces a required tags on resources.",
     "metadata": {
       "version": "1.0.0",
@@ -28,10 +28,10 @@
             "exists": false
           }
         ]
+      },
+      "then": {
+        "effect": "deny"
       }
-    },
-    "then": {
-      "effect": "deny"
     }
   }
 }
