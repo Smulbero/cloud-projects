@@ -37,4 +37,5 @@
 
 ### 3.2. Validation
 
-- Network Watchers confirms traffic flow?
+- Peerings are successful
+- Workloads in different spokes can reach each other
