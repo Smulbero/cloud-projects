@@ -1,0 +1,36 @@
+{  
+  "displayName": "Require tags on resources",
+  "description": "Enforces a required tags on resources.",
+  "mode": "All",
+  "metadata": {
+    "version": "1.0.0",
+    "category": "Tags",
+    "name": "require-tags-on-resources",
+    "terraform": true
+  },
+  "policyRule": {
+    "if": {
+      "anyOf": [
+        {
+          "field": "tags['CostCenter']",
+          "exists": false
+        },
+        {
+          "field": "tags['Owner']",
+          "exists": false
+        },
+        {
+          "field": "tags['DeployedMethod']",
+          "exists": false
+        },
+        {
+          "field": "tags['DeployedDate']",
+          "exists": false
+        }
+      ]
+    },
+    "then": {
+      "effect": "deny"
+    }
+  }  
+}

@@ -84,7 +84,7 @@ $RESOURCE_GROUPS = @(
 $VIRTUAL_NETWORKS = @(
         @{
         name = "connectivity"        
-        address_prefix = "10.10.0.0/16"
+        address_prefix = "10.10.0.0/20"
         tags = @{
             CostCenter = "tbd"
             Owner = "tbd"
@@ -95,7 +95,7 @@ $VIRTUAL_NETWORKS = @(
     }
     @{
         name = "identity"        
-        address_prefix = "10.20.0.0/16"
+        address_prefix = "10.20.0.0/20"
         tags = @{
             CostCenter = "tbd"
             Owner = "tbd"
@@ -106,7 +106,7 @@ $VIRTUAL_NETWORKS = @(
     }
     @{
         name = "management"        
-        address_prefix = "10.30.0.0/16"
+        address_prefix = "10.30.0.0/20"
         tags = @{
             CostCenter = "tbd"
             Owner = "tbd"
@@ -117,7 +117,7 @@ $VIRTUAL_NETWORKS = @(
     }
     @{
         name = "security"        
-        address_prefix = "10.40.0.0/16"
+        address_prefix = "10.40.0.0/20"
         tags = @{
             CostCenter = "tbd"
             Owner = "tbd"
@@ -128,7 +128,7 @@ $VIRTUAL_NETWORKS = @(
     }
     @{
         name = "finance"        
-        address_prefix = "10.50.0.0/16"
+        address_prefix = "10.50.0.0/20"
         tags = @{
             CostCenter = "tbd"
             Owner = "tbd"
@@ -139,7 +139,7 @@ $VIRTUAL_NETWORKS = @(
     }
     @{
         name = "testLocationPolicy"        
-        address_prefix = "10.60.0.0/16"
+        address_prefix = "10.60.0.0/20"
         tags = @{
             CostCenter = "tbd"
             Owner = "tbd"
@@ -150,7 +150,7 @@ $VIRTUAL_NETWORKS = @(
     }
     @{
         name = "testTagsPolicy"        
-        address_prefix = "10.70.0.0/16"
+        address_prefix = "10.70.0.0/20"
         tags = @{
             CostCenter = "tbd"
             Owner = "tbd"

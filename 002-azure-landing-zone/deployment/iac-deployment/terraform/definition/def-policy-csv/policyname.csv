@@ -1,0 +1,4 @@
+policy_ids
+deny-public-ip-address-creation
+require-tags-on-resources
+restrict-resource-location
