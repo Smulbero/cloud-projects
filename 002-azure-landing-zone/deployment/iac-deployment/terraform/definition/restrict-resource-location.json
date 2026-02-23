@@ -1,0 +1,24 @@
+{
+  "displayName": "Restrict resource deployments to allowed regions",
+  "description": "Denies resource deployment outside of approved locations",
+  "mode": "All",
+  "metadata": {
+    "version": "1.0.0",
+    "category": "Location",
+    "name": "restrict-resource-location"
+  },
+  "policyRule": {
+    "if": {
+      "not": {
+        "field": "location",
+        "in": [
+          "northeurope",
+          "westeurope"
+        ]
+      }
+    },
+    "then": {
+      "effect": "deny"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{  
+  "displayName": "Restrict creation of public IP resource",
+  "description": "Denies creation of public IP address resources to enforce private by default workloads",
+  "mode": "All",
+  "metadata": {
+    "version": "1.0.0",
+    "category": "Network",
+    "name": "deny-public-ip-address-creation",
+    "terraform": true
+  },
+  "policyRule": {
+    "if": {
+      "field": "type",
+      "equals": "Microsoft.Network/publicIPAddresses"
+    },
+    "then": {
+      "effect": "deny"
+    }
+  }  
+}
