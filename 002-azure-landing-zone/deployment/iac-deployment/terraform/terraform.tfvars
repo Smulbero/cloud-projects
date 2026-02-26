@@ -60,6 +60,10 @@ virtual_networks = {
         subnet_name          = "DomainServicesSubnet"
         subnet_address_space = ["10.10.1.0/24"]
       }
+      WorkloadSubnet = {
+        subnet_name          = "WorkloadSubnet"
+        subnet_address_space = ["10.10.2.0/24"]
+      }
     }
     tags = {
       CostCenter     = "12345"
@@ -186,5 +190,71 @@ ad_groups = {
 }
 
 # -------------------------------------------------------------------------------------------------------
+# Network Interfaces
+# -------------------------------------------------------------------------------------------------------
+network_interfaces = {
+  identity = {
+    interface_configs = {
+      vm-01 = {
+        name                          = "internal"
+        subnet                        = "WorkloadSubnet"
+        private_ip_address_allocation = "Dynamic"
+      }
+    }
+  }
+
+  finance = {
+    interface_configs = {
+      vm-01 = {
+        name                          = "internal"
+        subnet                        = "WorkloadSubnet"
+        private_ip_address_allocation = "Dynamic"
+      }
+    }
+  }
+}
+
+# -------------------------------------------------------------------------------------------------------
 # Virtual Machines
 # -------------------------------------------------------------------------------------------------------
+linux_virtual_machines = {
+  identity = {
+    vm_configs = {
+      vm-01 = {
+        os_disk = {
+          caching              = "ReadWrite"
+          storage_account_type = "Standard_LRS"
+        }
+        size = "Standard_F2"
+        source_image_reference = {
+          publisher = "Canonical"
+          offer     = "ubuntu-24_04-lts"
+          sku       = "server"
+          version   = "latest"
+        }
+        admin_username = "azuretester"
+        admin_password = "Testing123456"
+      }
+    }
+  }
+
+  finance = {
+    vm_configs = {
+      vm-01 = {
+        os_disk = {
+          caching              = "ReadWrite"
+          storage_account_type = "Standard_LRS"
+        }
+        size = "Standard_F2"
+        source_image_reference = {
+          publisher = "Canonical"
+          offer     = "ubuntu-24_04-lts"
+          sku       = "server"
+          version   = "latest"
+        }
+        admin_username = "azuretester"
+        admin_password = "Testing123456"
+      }
+    }
+  }
+}

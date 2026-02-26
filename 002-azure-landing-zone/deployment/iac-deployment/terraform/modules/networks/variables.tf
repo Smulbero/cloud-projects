@@ -13,9 +13,9 @@ variable "common_tags" {
 variable "resource_groups" {
   description = ""
   type = map(object({
-    name     = string
+    id = string
+    name = string
     location = string
-    id       = string
   }))
 }
 

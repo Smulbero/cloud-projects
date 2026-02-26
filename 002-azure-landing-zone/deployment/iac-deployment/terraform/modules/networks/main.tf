@@ -33,7 +33,7 @@ resource "azurerm_virtual_network" "this" {
 
   tags = merge(
     var.common_tags,
-    try(each.value.tags, {})
+    try(each.value.tags, var.resource_groups[each.value.key].tags)
   )
 }
 
