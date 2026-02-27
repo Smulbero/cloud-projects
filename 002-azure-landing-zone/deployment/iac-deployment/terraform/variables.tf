@@ -55,36 +55,6 @@ variable "virtual_networks" {
   }))
 }
 
-# variable "virtual_networks_name_prefix" {
-#   description = "Prefix value for virtual network name"
-#   type        = string
-#   default     = "vnet"
-# }
-
-# variable "hub_key" {
-#   description = "Key used for hub-and-spoke network topology"
-#   type        = string
-#   default     = "connectivity"
-# }
-
-# locals {
-#   virtual_networks = flatten([
-#     for network_key, network in var.virtual_networks : {
-#       key                   = network_key
-#       network_key           = network_key
-#       network_name          = try(network.network_name, null)
-#       network_address_space = network.network_address_space
-#       subnets               = try(network.subnets, null)
-#       tags                  = try(network.tags, null)
-#     }
-#   ])
-
-#   spoke_networks = {
-#     for k, v in var.virtual_networks : k => v
-#     if k != "connectivity" && k != "hub"
-#   }
-# }
-
 # -------------------------------------------------------------------------------------------------------
 # AD groups
 # -------------------------------------------------------------------------------------------------------
@@ -107,83 +77,59 @@ variable "ad_groups" {
   }))
 }
 
-locals {
-  ad_groups = flatten([
-    for group_key, group in var.ad_groups : {
-      key                    = group_key
-      group_key              = group_key
-      display_name           = group.display_name
-      mail_nickname          = try(group.mail_nickname, null)
-      permission_assignments = try(group.permission_assignments, null)
-    }
-  ])
-
-  ad_group_role_assignments = flatten([
-    for group_key, group in var.ad_groups : [
-      for assign_key, assignment in try(group.permission_assignments, {}) : [
-        for permission in assignment.permissions : {
-          key        = "${group_key}-${assign_key}-${permission}"
-          group_key  = group_key
-          scope      = assignment.scope
-          scope_key  = try(assignment.scope_key, null)
-          permission = permission
-        }
-      ]
-    ]
-  ])
-}
-
 # -------------------------------------------------------------------------------------------------------
 # Policy definitions
 # -------------------------------------------------------------------------------------------------------
-# locals {
-#   # Load policy definition data from a CSV file and convert it into a list
-#   policy_definition_file = csvdecode(file("${path.root}/definition/def-policy-csv/policyname.csv"))
+locals {
+  # Load policy definition data from a CSV file and convert it into a list
+  policy_definition_file = csvdecode(file("${path.root}/policy-definition/def-policy-csv/policyname.csv"))
 
-#   # Convert policy definition files to JSON format for Terraform use
-#   policy_data = { for name, file in data.local_file.definition_file : name => jsondecode(file.content) }
-# }
+  # Convert policy definition files to JSON format for Terraform use
+  policy_data = { for name, file in data.local_file.policy_definition_file : name => jsondecode(file.content) }
+}
 
-# # -------------------------------------------------------------------------------------------------------
-# # Network Interfaces
-# # -------------------------------------------------------------------------------------------------------
-# variable "network_interfaces" {
-#   description = <<EOT
-#     Network Interface Configurations
-#     Supports multiple interface configurations under 
-#     "interface_configs" object
-#   EOT
+# -------------------------------------------------------------------------------------------------------
+# Network Interfaces
+# -------------------------------------------------------------------------------------------------------
+variable "network_interfaces" {
+  description = <<EOT
+    Network Interface Configurations
+    Supports multiple interface configurations under 
+    "interface_configs" object
+  EOT
 
-#   type = map(object({
-#     interface_configs = map(object({
-#       name                          = string
-#       subnet_association            = string
-#       private_ip_address_allocation = string
-#     }))
-#   }))
-# }
+  type = map(object({
+    interface_configs = map(object({
+      name                          = string
+      subnet                        = string
+      private_ip_address_allocation = string
+    }))
+  }))
+}
 
-# # -------------------------------------------------------------------------------------------------------
-# # Virtual Machines
-# # -------------------------------------------------------------------------------------------------------
-# variable "virtual_machines_linux" {
-#   description = "value"
-#   type = map(object({
-#     vm_configs = map(object({
-#       size = string
-
-#       os_disk = object({
-#         caching              = string
-#         storage_account_type = string
-#       })
-
-#       source_image_reference = object({
-#         publisher = string
-#         offer     = string
-#         sku       = string
-#         version   = string
-#       })
-
-#     }))
-#   }))
-# }
+# -------------------------------------------------------------------------------------------------------
+# Virtual Machines
+# -------------------------------------------------------------------------------------------------------
+variable "linux_virtual_machines" {
+  description = "value"
+  type = map(object({
+    vm_configs = map(object({
+      os_disk = object({
+        caching              = string
+        storage_account_type = optional(string)
+      })
+      size = string
+      source_image_reference = object({
+        publisher = string
+        offer     = string
+        sku       = string
+        version   = string
+      })
+      admin_username                  = string
+      admin_password                  = string
+      disable_password_authentication = optional(bool)
+      computer_name                   = optional(string)
+      tags                            = optional(map(string))
+    }))
+  }))
+}
