@@ -1,23 +1,8 @@
 # -------------------------------------------------------------------------------------------------------
 # Miscellaneous
 # -------------------------------------------------------------------------------------------------------
-variable "common_tags" {
-  description = "Resource tags"
-  type        = map(string)
-
-  default = {
-    terraform = true
-  }
-}
-
-variable "resource_groups" {
-  description = ""
-  type = map(object({
-    id = string
-    name = string
-    location = string
-  }))
-}
+variable "tags" {}
+variable "resource_groups" {}
 
 # -------------------------------------------------------------------------------------------------------
 # Virtual Networks

@@ -14,6 +14,16 @@ data "local_file" "policy_definition_file" {
 module "resource_groups" {
   source          = "./modules/resource-groups"
   resource_groups = var.resource_groups
+  tags            = var.common_tags
+}
+
+# -------------------------------------------------------------------------------------------------------
+# Policy definitions
+# -------------------------------------------------------------------------------------------------------
+module "policy_definitions" {
+  source             = "./modules/policy-definitions"
+  policy_definitions = local.policy_data
+  subscription       = data.azurerm_subscription.current
 }
 
 # -------------------------------------------------------------------------------------------------------
@@ -23,6 +33,7 @@ module "virtual_networks" {
   source           = "./modules/networks"
   virtual_networks = var.virtual_networks
   resource_groups  = module.resource_groups.resource_groups
+  tags             = var.common_tags
 }
 
 # -------------------------------------------------------------------------------------------------------
@@ -36,19 +47,13 @@ module "ad_groups" {
 }
 
 # -------------------------------------------------------------------------------------------------------
-# Policy definitions
-# -------------------------------------------------------------------------------------------------------
-module "policy_definitions" {
-  source             = "./modules/policy-definitions"
-  policy_definitions = local.policy_data
-  subscription       = data.azurerm_subscription.current
-}
-
-# -------------------------------------------------------------------------------------------------------
 # Virtual Machines
 # -------------------------------------------------------------------------------------------------------
 module "virtual_machines" {
   source                 = "./modules/virtual-machines"
   network_interfaces     = var.network_interfaces
   linux_virtual_machines = var.linux_virtual_machines
+  resource_groups        = module.resource_groups.resource_groups
+  virtual_networks       = module.virtual_networks.virtual_networks
+  tags                   = var.common_tags
 }

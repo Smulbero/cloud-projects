@@ -30,3 +30,20 @@ output "network_peerings_from_spoke" {
     }
   }
 }
+
+output "network_interfaces" {
+  value = {
+    for k, v in module.virtual_machines.network_interfaces : k => {
+      nic_name = v.name
+    }
+  }
+}
+
+output "linux_virtual_machines" {
+  value = {
+    for k, v in module.virtual_machines.linux_virtual_machines : k => {
+      vm_name = v.name
+    }
+  }
+}
+
