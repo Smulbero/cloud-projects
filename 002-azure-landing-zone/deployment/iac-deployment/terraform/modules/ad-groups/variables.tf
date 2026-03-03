@@ -1,31 +1,13 @@
 # -------------------------------------------------------------------------------------------------------
-# Miscellaneous
+# Variables
 # -------------------------------------------------------------------------------------------------------
 variable "resource_groups" {}
 variable "subscription" {}
+variable "ad_groups" {}
 
 # -------------------------------------------------------------------------------------------------------
-# AD groups
+# Locals
 # -------------------------------------------------------------------------------------------------------
-variable "ad_groups" {
-  description = <<-EOT
-    AD group configurations
-    Each group is separated by a key such as "group_01"
-    Each group block supports multiple permission assignments 
-    under "permission_assignments" object
-  EOT
-
-  type = map(object({
-    display_name  = string
-    mail_nickname = optional(string)
-    permission_assignments = optional(map(object({
-      scope       = string
-      scope_key   = optional(string)
-      permissions = list(string)
-    })))
-  }))
-}
-
 locals {
   ad_groups = flatten([
     for group_key, group in var.ad_groups : {

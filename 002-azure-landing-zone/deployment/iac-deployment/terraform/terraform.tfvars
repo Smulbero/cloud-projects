@@ -225,7 +225,7 @@ linux_virtual_machines = {
           caching              = "ReadWrite"
           storage_account_type = "Standard_LRS"
         }
-        size = "Standard_F2"
+        size = "Standard_F2s_v2"
         source_image_reference = {
           publisher = "Canonical"
           offer     = "ubuntu-24_04-lts"
@@ -245,7 +245,7 @@ linux_virtual_machines = {
           caching              = "ReadWrite"
           storage_account_type = "Standard_LRS"
         }
-        size = "Standard_F2"
+        size = "Standard_F2s_v2"
         source_image_reference = {
           publisher = "Canonical"
           offer     = "ubuntu-24_04-lts"
@@ -254,6 +254,82 @@ linux_virtual_machines = {
         }
         admin_username = "azuretester"
         admin_password = "Testing123456"
+      }
+    }
+  }
+}
+
+# -------------------------------------------------------------------------------------------------------
+# Public IP Addresses
+# -------------------------------------------------------------------------------------------------------
+public_ips = {
+  connectivity = {
+    pip_configs = {
+      AzureBastion = {
+        allocation_method = "Static"
+        sku               = "Standard"
+      }
+      AzureFirewall = {
+        allocation_method = "Static"
+        sku               = "Standard"
+      }
+    }
+  }
+}
+
+# -------------------------------------------------------------------------------------------------------
+# Shared Services
+# -------------------------------------------------------------------------------------------------------
+shared_services = {
+  connectivity = {
+    service_configs = {
+      AzureBastion = {
+        sku    = "Basic"
+        subnet = "AzureBastionSubnet"
+        pip    = "AzureBastion"
+      }
+      AzureFirewall = {
+        sku_name = "AZFW_VNet"
+        sku_tier = "Standard"
+        subnet   = "AzureFirewallSubnet"
+        pip      = "AzureFirewall"
+      }
+    }
+  }
+}
+
+# -------------------------------------------------------------------------------------------------------
+# Route Tables
+# -------------------------------------------------------------------------------------------------------
+route_tables = {
+  identity = {
+    tables = {
+      table-01 = {
+        subnet = "WorkloadSubnet"
+        routes = {
+          route-01 = {
+            name                   = "fw-default-gw"
+            address_prefix         = "0.0.0.0/0"
+            next_hop_type          = "VirtualAppliance"
+            next_hop_in_ip_address = "10.30.2.4/24" # First usable address in firewall subnet
+          }
+        }
+      }
+    }
+  }
+
+  finance = {
+    tables = {
+      table-01 = {
+        subnet = "WorkloadSubnet"
+        routes = {
+          route-01 = {
+            name                   = "fw-default-gw"
+            address_prefix         = "0.0.0.0/0"
+            next_hop_type          = "VirtualAppliance"
+            next_hop_in_ip_address = "10.30.2.4/24" # First usable address in firewall subnet
+          }
+        }
       }
     }
   }

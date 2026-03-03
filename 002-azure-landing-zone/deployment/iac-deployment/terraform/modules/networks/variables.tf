@@ -1,37 +1,14 @@
 # -------------------------------------------------------------------------------------------------------
-# Miscellaneous
+# Variables
 # -------------------------------------------------------------------------------------------------------
 variable "tags" {}
 variable "resource_groups" {}
-
-# -------------------------------------------------------------------------------------------------------
-# Virtual Networks
-# -------------------------------------------------------------------------------------------------------
-variable "virtual_networks" {
-  description = <<-EOT
-    Network configuration for VNets and subnets.
-    Each network is separated by a key such as "example_key"
-    Each network block supports multiple subnet configurations 
-    under "subnets" object
-  EOT
-
-  type = map(object({
-    network_name          = optional(string)
-    network_address_space = list(string)
-    subnets = optional(map(object({
-      subnet_name          = optional(string)
-      subnet_address_space = list(string)
-    })))
-    tags = optional(map(string))
-  }))
-}
-
+variable "virtual_networks" {}
 variable "virtual_networks_name_prefix" {
   description = "Prefix value for virtual network name"
   type        = string
   default     = "vnet"
 }
-
 variable "hub_key" {
   description = "Key used for hub-and-spoke network topology"
   type        = string

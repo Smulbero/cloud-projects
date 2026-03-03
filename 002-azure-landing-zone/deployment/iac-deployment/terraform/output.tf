@@ -1,3 +1,6 @@
+# -------------------------------------------------------------------------------------------------------
+# Resource Groups
+# -------------------------------------------------------------------------------------------------------
 output "resource_groups" {
   value = {
     for k, v in module.resource_groups.resource_groups : k => {
@@ -6,6 +9,9 @@ output "resource_groups" {
   }
 }
 
+# -------------------------------------------------------------------------------------------------------
+# Virtual Networks and Network Peerings
+# -------------------------------------------------------------------------------------------------------
 output "virtual_networks" {
   value = {
     for k, v in module.virtual_networks.virtual_networks : k => {
@@ -31,6 +37,9 @@ output "network_peerings_from_spoke" {
   }
 }
 
+# -------------------------------------------------------------------------------------------------------
+# Virtual Machines and their Network Interfaces
+# -------------------------------------------------------------------------------------------------------
 output "network_interfaces" {
   value = {
     for k, v in module.virtual_machines.network_interfaces : k => {
@@ -47,3 +56,24 @@ output "linux_virtual_machines" {
   }
 }
 
+# -------------------------------------------------------------------------------------------------------
+# Shared Services
+# -------------------------------------------------------------------------------------------------------
+output "azure_bastion" {
+  value = module.shared_services.azure_bastion
+}
+
+output "azure_firewall" {
+  value = module.shared_services.azure_firewall
+}
+
+# -------------------------------------------------------------------------------------------------------
+# Route Tables and Associations
+# -------------------------------------------------------------------------------------------------------
+output "route_tables" {
+  value = module.route_tables.route_tables
+}
+
+output "route_table_associations" {
+  value = module.route_tables.route_table_associations
+}
