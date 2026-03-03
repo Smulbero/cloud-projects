@@ -10,9 +10,11 @@ output "virtual_networks" {
 }
 
 output "network_peerings_from_hub" {
+  description = "Map of virtual network peering hub to spoke objects, keyad by their map key"
   value = azurerm_virtual_network_peering.hub_to_spoke
 }
 
 output "network_peerings_from_spoke" {
+  description = "Map of virtual network peering spoke to hub objects, keyad by their map key"
   value = azurerm_virtual_network_peering.spoke_to_hub
 }

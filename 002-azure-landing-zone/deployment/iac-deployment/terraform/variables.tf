@@ -111,7 +111,12 @@ variable "network_interfaces" {
 # Virtual Machines
 # -------------------------------------------------------------------------------------------------------
 variable "linux_virtual_machines" {
-  description = "value"
+  description = <<EOT
+    Linux based Virtual Machine Configurations
+    Supports multiple VM configurations under
+    "vm_configs" object
+  EOT
+
   type = map(object({
     vm_configs = map(object({
       os_disk = object({
@@ -130,6 +135,69 @@ variable "linux_virtual_machines" {
       disable_password_authentication = optional(bool)
       computer_name                   = optional(string)
       tags                            = optional(map(string))
+    }))
+  }))
+}
+
+# -------------------------------------------------------------------------------------------------------
+# Public IP Addresses
+# -------------------------------------------------------------------------------------------------------
+variable "public_ips" {
+  description = <<EOT
+    Public IP Address Configurations
+    supports multiple configurations under
+    "pop_configs" object
+  EOT
+  type = map(object({
+    pip_configs = map(object({
+      allocation_method = string
+      sku               = string
+      tags              = optional(map(string))
+    }))
+  }))
+}
+
+# -------------------------------------------------------------------------------------------------------
+# Shared Services
+# -------------------------------------------------------------------------------------------------------
+variable "shared_services" {
+  description = <<EOT
+    Shared Services used in the network hub
+    Supports Azure Bastion and Azure Firewall
+  EOT
+
+  type = map(object({
+    service_configs = map(object({
+      sku              = optional(string)
+      sku_name         = optional(string)
+      sku_tier         = optional(string)
+      subnet           = optional(string)
+      ip_configuration = optional(object({}))
+      tags             = optional(map(string))
+    }))
+  }))
+}
+
+# -------------------------------------------------------------------------------------------------------
+# Route Tables
+# -------------------------------------------------------------------------------------------------------
+variable "route_tables" {
+  description = <<EOT
+    Route Table configurations
+    Supports multiple tables and routes under
+    "tables" and "routes" object
+  EOT
+
+  type = map(object({
+    tables = map(object({
+      subnet = string
+      routes = map(object({
+        name                   = string
+        address_prefix         = string
+        next_hop_type          = string
+        next_hop_in_ip_address = string
+      }))
+      tags = optional(map(string))
     }))
   }))
 }
