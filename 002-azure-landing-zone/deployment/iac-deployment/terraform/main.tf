@@ -20,11 +20,11 @@ module "resource_groups" {
 # -------------------------------------------------------------------------------------------------------
 # Policy definitions and Assignments
 # -------------------------------------------------------------------------------------------------------
-# module "policy_definitions" {
-#   source             = "./modules/policy-definitions"
-#   policy_definitions = local.policy_data
-#   subscription       = data.azurerm_subscription.current
-# }
+module "policy_definitions" {
+  source             = "./modules/policy-definitions"
+  policy_definitions = local.policy_data
+  subscription       = data.azurerm_subscription.current
+}
 
 # -------------------------------------------------------------------------------------------------------
 # Virtual Networks and Network Peerings
@@ -39,12 +39,12 @@ module "virtual_networks" {
 # -------------------------------------------------------------------------------------------------------
 # AD groups and Role Assignments
 # -------------------------------------------------------------------------------------------------------
-# module "ad_groups" {
-#   source          = "./modules/ad-groups"
-#   ad_groups       = var.ad_groups
-#   resource_groups = module.resource_groups.resource_groups
-#   subscription    = data.azurerm_subscription.current
-# }
+module "ad_groups" {
+  source          = "./modules/ad-groups"
+  ad_groups       = var.ad_groups
+  resource_groups = module.resource_groups.resource_groups
+  subscription    = data.azurerm_subscription.current
+}
 
 # -------------------------------------------------------------------------------------------------------
 # Virtual Machines and their Network Interfaces
@@ -62,23 +62,23 @@ module "virtual_machines" {
 # -------------------------------------------------------------------------------------------------------
 # Shared Services
 # -------------------------------------------------------------------------------------------------------
-# module "shared_services" {
-#   source           = "./modules/shared-services"
-#   public_ips       = var.public_ips
-#   resource_groups  = module.resource_groups.resource_groups
-#   virtual_networks = module.virtual_networks.virtual_networks
-#   shared_services  = var.shared_services
-#   tags             = var.common_tags
-# }
+module "shared_services" {
+  source           = "./modules/shared-services"
+  public_ips       = var.public_ips
+  resource_groups  = module.resource_groups.resource_groups
+  virtual_networks = module.virtual_networks.virtual_networks
+  shared_services  = var.shared_services
+  tags             = var.common_tags
+}
 
 # -------------------------------------------------------------------------------------------------------
 # Route Tables and Associations
 # -------------------------------------------------------------------------------------------------------
-# module "route_tables" {
-#   source           = "./modules/route-tables"
-#   route_tables     = var.route_tables
-#   resource_groups  = module.resource_groups.resource_groups
-#   virtual_networks = module.virtual_networks.virtual_networks
-#   firewall      = module.shared_services.azure_firewall
-#   tags             = var.common_tags
-# }
+module "route_tables" {
+  source           = "./modules/route-tables"
+  route_tables     = var.route_tables
+  resource_groups  = module.resource_groups.resource_groups
+  virtual_networks = module.virtual_networks.virtual_networks
+  firewall      = module.shared_services.azure_firewall
+  tags             = var.common_tags
+}
