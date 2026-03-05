@@ -232,8 +232,6 @@ linux_virtual_machines = {
           sku       = "server"
           version   = "latest"
         }
-        admin_username = "azuretester"
-        admin_password = "Testing123456"
       }
     }
   }
@@ -252,6 +250,24 @@ linux_virtual_machines = {
           sku       = "server"
           version   = "latest"
         }
+      }
+    }
+  }
+}
+
+vm_credentials = {
+  identity = {
+    credentials = {
+      vm-01 = {
+        admin_username = "azuretester"
+        admin_password = "Testing123456"
+      }
+    }
+  }
+
+  finance = {
+    credentials = {
+      vm-01 = {
         admin_username = "azuretester"
         admin_password = "Testing123456"
       }

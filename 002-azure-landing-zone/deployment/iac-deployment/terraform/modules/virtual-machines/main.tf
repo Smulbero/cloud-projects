@@ -63,8 +63,8 @@ resource "azurerm_linux_virtual_machine" "this" {
 
   # Optional attributes
   computer_name  = each.value.computer_name != null ? each.value.computer_name : null
-  admin_username = each.value.admin_username
-  admin_password = each.value.admin_password
+  admin_username = each.value.credentials.admin_username
+  admin_password = each.value.credentials.admin_password
   # disable_password_authentication must be set to false if admin_password is specified
   disable_password_authentication = each.value.disable_password_authentication != null ? each.value.disable_password_authentication : false
 

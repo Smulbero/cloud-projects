@@ -6,6 +6,7 @@ variable "resource_groups" {}
 variable "virtual_networks" {}
 variable "network_interfaces" {}
 variable "linux_virtual_machines" {}
+variable "vm_credentials" {}
 
 # -------------------------------------------------------------------------------------------------------
 # Locals
@@ -34,12 +35,11 @@ locals {
         os_disk                         = vm.os_disk
         size                            = vm.size
         source_image_reference          = vm.source_image_reference
-        admin_username                  = vm.admin_username
-        admin_password                  = vm.admin_password
+        credentials                     = var.vm_credentials[env_key].credentials[vm_key]
         disable_password_authentication = try(vm.disable_password_authentication, null)
         computer_name                   = try(vm.computer_name, null)
         tags                            = try(vm.tags, null)
       }
     ]
-  ])
+  ])  
 }
