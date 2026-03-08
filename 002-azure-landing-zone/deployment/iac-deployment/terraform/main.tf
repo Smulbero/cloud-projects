@@ -53,6 +53,7 @@ module "virtual_machines" {
   source                 = "./modules/virtual-machines"
   network_interfaces     = var.network_interfaces
   linux_virtual_machines = var.linux_virtual_machines
+  vm_credentials         = var.vm_credentials
   resource_groups        = module.resource_groups.resource_groups
   virtual_networks       = module.virtual_networks.virtual_networks
   tags                   = var.common_tags

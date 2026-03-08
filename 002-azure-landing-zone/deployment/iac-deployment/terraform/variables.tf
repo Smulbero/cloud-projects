@@ -130,13 +130,22 @@ variable "linux_virtual_machines" {
         sku       = string
         version   = string
       })
-      admin_username                  = string
-      admin_password                  = string
       disable_password_authentication = optional(bool)
       computer_name                   = optional(string)
       tags                            = optional(map(string))
     }))
   }))
+}
+
+variable "vm_credentials" {
+  description = "Credentials for Virtual Machines"
+  type = map(object({
+    credentials = map(object({
+      admin_username                  = string
+      admin_password                  = string
+    }))
+  }))
+  sensitive = true
 }
 
 # -------------------------------------------------------------------------------------------------------
